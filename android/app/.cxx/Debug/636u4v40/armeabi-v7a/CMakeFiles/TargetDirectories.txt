@@ -1,0 +1,2 @@
+D:/Genwizz/WCApp/android/app/.cxx/Debug/636u4v40/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/Genwizz/WCApp/android/app/.cxx/Debug/636u4v40/armeabi-v7a/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,2 @@
+E:/GenWizz/wc_coin_app/wc_coin_app/android/app/.cxx/Debug/57155v2r/x86/CMakeFiles/edit_cache.dir
+E:/GenWizz/wc_coin_app/wc_coin_app/android/app/.cxx/Debug/57155v2r/x86/CMakeFiles/rebuild_cache.dir

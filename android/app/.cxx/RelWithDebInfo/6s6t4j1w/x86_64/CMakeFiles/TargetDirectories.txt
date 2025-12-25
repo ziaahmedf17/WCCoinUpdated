@@ -1,0 +1,2 @@
+I:/GenWizz/WCApp/android/app/.cxx/RelWithDebInfo/6s6t4j1w/x86_64/CMakeFiles/edit_cache.dir
+I:/GenWizz/WCApp/android/app/.cxx/RelWithDebInfo/6s6t4j1w/x86_64/CMakeFiles/rebuild_cache.dir

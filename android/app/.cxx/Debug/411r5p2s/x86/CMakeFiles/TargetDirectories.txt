@@ -1,0 +1,2 @@
+I:/GenWizz/WCApp/android/app/.cxx/Debug/411r5p2s/x86/CMakeFiles/edit_cache.dir
+I:/GenWizz/WCApp/android/app/.cxx/Debug/411r5p2s/x86/CMakeFiles/rebuild_cache.dir
