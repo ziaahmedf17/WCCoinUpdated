@@ -530,7 +530,7 @@ class _SpinAndWinViewState extends State<SpinAndWinView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.bgColor,
       appBar: const CustomAppBar(title: 'Spin and Win'),
       body: Center(
         child: Column(
@@ -563,24 +563,13 @@ class _SpinAndWinViewState extends State<SpinAndWinView>
                         color: segmentColors[index % segmentColors.length],
                       ),
                       child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.monetization_on,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              value,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          value,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -678,7 +667,7 @@ class _SpinAndWinViewState extends State<SpinAndWinView>
                       opacity: _canClaim ? 1.0 : 0.5,
 
                       child: PrimaryBTN(
-                          btColor: AppColors.yellow,
+                          btColor: AppColors.secondary,
                           onCLick: _canClaim
                               ? () async {
                                   if (apads['int']) {

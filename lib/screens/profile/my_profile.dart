@@ -208,31 +208,40 @@ class _MyProfileViewState extends State<MyProfileView> {
     bool haveAmount = true,
     required String subtitle,
   }) {
-    return Container(
-      width: 100.h,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          colors: [
-            Color(0xff791CFF),
-            Color(0xff270A61),
+    return Material(
+      elevation: 5,
+      borderRadius: BorderRadius.circular(15),
+      child: Container(
+        width: 120.h,
+        height: 150.v,
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CircleAvatar(
+                backgroundColor: AppColors.secondary,
+                child: Image.asset(image, scale: 5.v)),
+            SizedBox(height: 12.v),
+            CustomText(
+                title: title,
+                size: 13.fSize,
+                color: AppColors.fontColor,
+                fontWeight: FontWeight.w500,
+                alignment: TextAlign.center),
+            SizedBox(height: 12.v),
+            if (haveAmount)
+              CustomText(
+                title: subtitle,
+                size: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.fontColor,
+              )
           ],
         ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(image, scale: 5.v),
-          const SizedBox(height: 8),
-          CustomText(
-              title: title,
-              size: 20.fSize,
-              fontWeight: FontWeight.bold,
-              alignment: TextAlign.center),
-          if (haveAmount) CustomText(title: subtitle)
-        ],
       ),
     );
   }
@@ -243,31 +252,36 @@ class _MyProfileViewState extends State<MyProfileView> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: ListTile(
-          title: CustomText(
-            title: title,
-            color: isDeleteAccount ? Colors.red : Colors.black,
-            size: 25,
-            fontWeight: FontWeight.w500,
+      child: Material(
+        elevation: 5,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 13.v),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
           ),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            color: isDeleteAccount ? Colors.red : const Color(0xff7680A6),
-            size: 16,
+          child: ListTile(
+            title: CustomText(
+              title: title,
+              color: isDeleteAccount ? Colors.red : Colors.black,
+              size: 25,
+              fontWeight: FontWeight.w600,
+            ),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              color: isDeleteAccount ? Colors.red : const Color(0xff7680A6),
+              size: 16,
+            ),
+            onTap: () {
+              if (isDeleteAccount) {
+                _showDeleteAccountDialog();
+              } else if (isRateUs) {
+                // Handle other menu items
+                _openPlayStore();
+              }
+            },
           ),
-          onTap: () {
-            if (isDeleteAccount) {
-              _showDeleteAccountDialog();
-            } else if (isRateUs) {
-              // Handle other menu items
-              _openPlayStore();
-            }
-          },
         ),
       ),
     );
@@ -287,7 +301,7 @@ class _MyProfileViewState extends State<MyProfileView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: "My Profile"),
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.bgColor,
       body: SafeArea(
         child: _isLoading
             ? const Center(
@@ -311,32 +325,54 @@ class _MyProfileViewState extends State<MyProfileView> {
                     child: Column(
                       children: [
                         const SizedBox(height: 20),
-                        CircleAvatar(
-                          radius: 40,
-                          backgroundImage: _avatar != null
-                              ? NetworkImage(_avatar!)
-                              : const AssetImage("assets/images/profile.png")
-                                  as ImageProvider,
-                        ),
-                        Gap.v(15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomText(
-                              title: _name ?? '',
-                              size: 25,
-                              fontWeight: FontWeight.bold,
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 25.h,
+                          ),
+                          child: Material(
+                            elevation: 5,
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 25.v),
+                              decoration: BoxDecoration(
+                                color: AppColors.white,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: _avatar != null
+                                        ? NetworkImage(_avatar!)
+                                        : const AssetImage(
+                                                "assets/images/profile.png")
+                                            as ImageProvider,
+                                  ),
+                                  Gap.v(15),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      CustomText(
+                                        title: _name ?? '',
+                                        size: 25,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.fontColor,
+                                      ),
+                                    ],
+                                  ),
+                                  CustomText(
+                                    title: _email ?? '',
+                                    size: 14,
+                                    color: const Color(0xffA0A6BD),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                        CustomText(
-                          title: _email ?? '',
-                          size: 14,
-                          color: const Color(0xffA0A6BD),
+                          ),
                         ),
                         const SizedBox(height: 20),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: EdgeInsets.symmetric(horizontal: 25.h),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -376,33 +412,44 @@ class _MyProfileViewState extends State<MyProfileView> {
                                           ));
                                         };
                                 },
-                                child: Container(
-                                  width: 100.h,
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      colors: [
-                                        Color(0xff791CFF),
-                                        Color(0xff270A61),
+                                child: Material(
+                                  elevation: 5,
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: Container(
+                                    width: 120.h,
+                                    height: 150.v,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.white,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    padding: const EdgeInsets.all(10),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundColor: AppColors.secondary,
+                                          child: Image.asset(
+                                            "assets/icons/withdraw.png",
+                                            scale: 5,
+                                          ),
+                                        ),
+                                        SizedBox(height: 12.v),
+                                        CustomText(
+                                            title: 'Withdrawal',
+                                            size: 13.fSize,
+                                            color: AppColors.fontColor,
+                                            fontWeight: FontWeight.w500,
+                                            alignment: TextAlign.center),
+                                        SizedBox(height: 12.v),
+                                        CustomText(
+                                            title: "History",
+                                            size: 20.fSize,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.fontColor,
+                                            alignment: TextAlign.center),
                                       ],
                                     ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  padding: EdgeInsets.all(14.v),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        "assets/icons/withdraw.png",
-                                        scale: 5,
-                                      ),
-                                      const SizedBox(height: 8),
-                                      CustomText(
-                                          title: "Withdrawal \nHistory",
-                                          size: 20.fSize,
-                                          fontWeight: FontWeight.bold,
-                                          alignment: TextAlign.center),
-                                    ],
                                   ),
                                 ),
                               )
@@ -418,6 +465,7 @@ class _MyProfileViewState extends State<MyProfileView> {
                               title: 'General',
                               size: 22,
                               fontWeight: FontWeight.bold,
+                              color: AppColors.fontColor,
                             ),
                           ),
                         ),
@@ -426,6 +474,7 @@ class _MyProfileViewState extends State<MyProfileView> {
                         _menuItem('📲 Contact Us'),
                         _menuItem('✨ Rate Us'),
                         _menuItem('🗑️ Delete Account'),
+                        SizedBox(height: 10.v),
                       ],
                     ),
                   ),

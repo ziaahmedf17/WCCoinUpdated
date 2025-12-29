@@ -23,12 +23,17 @@ class PrimaryBTN extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      height: 46.v,
+      height: 56.v,
       minWidth: width.h,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       onPressed: onCLick,
       color: btColor,
-      child: CustomText(title: buttonTitle, size: 15),
+      child: CustomText(
+        title: buttonTitle,
+        size: 18,
+        color: AppColors.white,
+        fontWeight: FontWeight.w600,
+      ),
     );
   }
 }

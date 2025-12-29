@@ -1,152 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
-// import 'package:wc_coin_app/core/constants/colors.dart';
-// import 'package:wc_coin_app/core/constants/size_utils.dart';
-// import 'package:wc_coin_app/models/announcement_model.dart';
-// import 'package:wc_coin_app/services/anouncement_service.dart';
-// import 'package:wc_coin_app/shared/custom_appbar.dart';
-// import 'package:wc_coin_app/shared/text_view.dart';
-//
-// class NotificationView extends StatefulWidget {
-//   const NotificationView({super.key});
-//
-//   @override
-//   State<NotificationView> createState() => _NotificationViewState();
-// }
-//
-// class _NotificationViewState extends State<NotificationView> {
-//   late Future<List<Announcement>> announcementsFuture;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     announcementsFuture = AnnouncementService().fetchAnnouncements();
-//   }
-//
-//   Widget _buildLoadingWidget() {
-//     return Center(
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           const CircularProgressIndicator(
-//             valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
-//           ),
-//           Gap.v(20),
-//           const CustomText(
-//             title: 'Loading Announcement...',
-//             size: 16,
-//             color: AppColors.white,
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   Widget _buildEmptyState() {
-//     return Center(
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           Icon(
-//             Icons.notification_add,
-//             size: 64.v,
-//             color: AppColors.white.withOpacity(0.7),
-//           ),
-//           Gap.v(20),
-//           const CustomText(
-//             title: 'No Announcement yet',
-//             size: 18,
-//             color: AppColors.white,
-//           ),
-//           Gap.v(10),
-//           CustomText(
-//             title: 'All the Announcement will displayed here.',
-//             size: 14,
-//             color: AppColors.white.withOpacity(0.8),
-//             alignment: TextAlign.center,
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: const CustomAppBar(title: "Notifications"),
-//       backgroundColor: AppColors.primary,
-//       body: FutureBuilder<List<Announcement>>(
-//         future: announcementsFuture,
-//         builder: (context, snapshot) {
-//           if (snapshot.connectionState == ConnectionState.waiting) {
-//             // 🔄 Loading state
-//             return _buildLoadingWidget();
-//           } else if (snapshot.hasError) {
-//             // ❌ Error state
-//             return Center(
-//               child: CustomText(
-//                 title: "Error: ${snapshot.error}",
-//                 size: 16,
-//                 color: Colors.red,
-//               ),
-//             );
-//           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-//             // 📭 No Data state
-//             return Center(child: _buildEmptyState());
-//           }
-//
-//           final announcements = snapshot.data!;
-//
-//           return ListView.builder(
-//             physics: const BouncingScrollPhysics(),
-//             itemCount: announcements.length,
-//             itemBuilder: (context, index) {
-//               final announcement = announcements[index];
-//               final formattedDate = DateFormat("dd MMM yyyy, hh:mm a")
-//                   .format(announcement.createdAt);
-//
-//               return _notificationTile(
-//                 image: "assets/images/notification.png",
-//                 title: announcement.title,
-//                 subtitle: announcement.type,
-//                 trailing: formattedDate,
-//               );
-//             },
-//           );
-//         },
-//       ),
-//     );
-//   }
-//
-//   Widget _notificationTile({
-//     required String title,
-//     required String image,
-//     required String subtitle,
-//     required String trailing,
-//   }) {
-//     return Container(
-//       margin: const EdgeInsets.only(top: 10),
-//       child: ListTile(
-//         leading: Image.asset(image, width: 40, height: 40),
-//         title: CustomText(
-//           title: title,
-//           size: 20.fSize,
-//           color: Colors.white,
-//         ),
-//         subtitle: CustomText(
-//           title: subtitle,
-//           color: Colors.white.withOpacity(0.6),
-//         ),
-//         trailing: CustomText(
-//           size: 14.fSize,
-//           title: trailing,
-//           color: const Color(0xffAFAFAF),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wc_coin_app/core/constants/colors.dart';
@@ -396,8 +247,8 @@ class _NotificationViewState extends State<NotificationView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.bgColor,
       appBar: const CustomAppBar(title: "Notifications"),
-      backgroundColor: AppColors.primary,
       body: FutureBuilder<List<Announcement>>(
         future: announcementsFuture,
         builder: (context, snapshot) {
@@ -448,23 +299,43 @@ class _NotificationViewState extends State<NotificationView> {
     required VoidCallback onTap,
   }) {
     return Container(
-      margin: const EdgeInsets.only(top: 10),
-      child: ListTile(
-        onTap: onTap,
-        leading: Image.asset(image, width: 40, height: 40),
-        title: CustomText(
-          title: title,
-          size: 20.fSize,
-          color: Colors.white,
-        ),
-        subtitle: CustomText(
-          title: 'Tap to see more',
-          color: Colors.white.withOpacity(0.6),
-        ),
-        trailing: CustomText(
-          size: 14.fSize,
-          title: trailing,
-          color: const Color(0xffAFAFAF),
+      margin: EdgeInsets.only(top: 10, left: 20.h, right: 20.h),
+      child: Material(
+        color: AppColors.white,
+        elevation: 5,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: ListTile(
+            onTap: onTap,
+            leading: CircleAvatar(
+              backgroundColor: AppColors.secondary,
+              child: Center(
+                child: Icon(
+                  Icons.notifications_on,
+                  color: AppColors.white,
+                ),
+              ),
+            ),
+            title: CustomText(
+              title: title,
+              size: 17.fSize,
+              fontWeight: FontWeight.w600,
+              color: AppColors.fontColor,
+            ),
+            subtitle: CustomText(
+              title: 'Tap to see more',
+              color: AppColors.fontColor.withOpacity(0.6),
+            ),
+            trailing: CustomText(
+              size: 14.fSize,
+              title: trailing,
+              color: const Color(0xffAFAFAF),
+            ),
+          ),
         ),
       ),
     );

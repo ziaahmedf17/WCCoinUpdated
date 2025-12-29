@@ -48,7 +48,7 @@ class CustomText extends StatelessWidget {
         //     (isDark
         //         ? ColorsConstants.primaryTextColor
         //         : ColorsConstants.textColoWhite),
-        color: color ?? AppColors.white,
+        color: color ?? AppColors.fontColor,
         decoration: textDecoration,
         fontWeight: fontWeight,
         fontSize: size.fSize,

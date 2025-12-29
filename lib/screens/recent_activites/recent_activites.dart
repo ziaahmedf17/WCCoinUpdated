@@ -155,16 +155,10 @@ class _RecentActivitiesState extends State<RecentActivities> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
-      appBar: AppBar(
-        title: const CustomText(
-          title: 'Recent Activities',
-          size: 24,
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: AppColors.primary,
-        iconTheme: const IconThemeData(color: AppColors.white),
+      backgroundColor: AppColors.bgColor,
+      appBar: CustomAppBar(
+        title: 'Recent Activities',
+        hasLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -186,7 +180,7 @@ class _RecentActivitiesState extends State<RecentActivities> {
             return ListView.separated(
               physics: const BouncingScrollPhysics(),
               itemCount: activities.length,
-              separatorBuilder: (context, index) => Gap.v(8),
+              separatorBuilder: (context, index) => Gap.v(20),
               itemBuilder: (context, index) {
                 final activity = activities[index];
                 final formattedDate = DateFormat("dd MMM yyyy, hh:mm a")
@@ -213,32 +207,58 @@ class _RecentActivitiesState extends State<RecentActivities> {
     required String subtitle,
     required String traling,
   }) {
-    return ListTile(
-      leading: Image.asset(image, height: 36, width: 36),
-      title: CustomText(
-        title: tile,
-        size: 18.fSize,
+    return Material(
+      borderRadius: BorderRadius.circular(16),
+      elevation: 5,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: AppColors.fontColor.withOpacity(.1),
+          //     spreadRadius: 2,
+          //     blurRadius: 10,
+          //   )
+          // ],
+        ),
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: AppColors.secondary,
+            // child: Image.asset(image, height: 36, width: 36),
+          ),
+          title: CustomText(
+            title: tile,
+            size: 18.fSize,
+            color: AppColors.fontColor,
+            fontWeight: FontWeight.w600,
+          ),
+          subtitle: CustomText(
+            title: subtitle,
+            fontWeight: FontWeight.w400,
+            size: 12,
+            color: AppColors.fontColor,
+          ),
+          // trailing: traling.isNotEmpty
+          //     ? CustomText(
+          //         size: 18.fSize,
+          //         title: traling,
+          //         color: const Color(0xff44FF00),
+          //       )
+          //     : null,
+          trailing: tile.contains('UC')
+              ? CustomText(
+                  title: traling.replaceAll('+', '-'),
+                  color: Colors.red,
+                  fontWeight: FontWeight.w600,
+                )
+              : CustomText(
+                  title: traling,
+                  color: Colors.green,
+                  fontWeight: FontWeight.w600,
+                ),
+        ),
       ),
-      subtitle: CustomText(
-        title: subtitle,
-        color: Colors.white.withOpacity(0.6),
-      ),
-      // trailing: traling.isNotEmpty
-      //     ? CustomText(
-      //         size: 18.fSize,
-      //         title: traling,
-      //         color: const Color(0xff44FF00),
-      //       )
-      //     : null,
-      trailing: tile.contains('UC')
-          ? CustomText(
-              title: traling.replaceAll('+', '-'),
-              color: Colors.red,
-            )
-          : CustomText(
-              title: traling,
-              color: Colors.green,
-            ),
     );
   }
 }

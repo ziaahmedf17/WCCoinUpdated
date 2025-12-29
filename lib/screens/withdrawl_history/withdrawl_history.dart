@@ -556,68 +556,52 @@ class _WithDrawlHistoryViewState extends State<WithDrawlHistoryView> {
     required Transaction transaction,
   }) {
     return Container(
-      margin: const EdgeInsets.only(top: 10),
-      child: ListTile(
-        onTap: () => _showTransactionDialog(transaction.id.toString()),
-        leading: Container(
-          width: 40.h,
-          height: 40.v,
+      margin: EdgeInsets.only(top: 10.v, right: 20.h, left: 20.h),
+      child: Material(
+        borderRadius: BorderRadius.circular(16),
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 10.v),
           decoration: BoxDecoration(
-            color: _getStatusColor(transaction.status).withOpacity(0.2),
-            borderRadius: BorderRadius.circular(20),
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(16),
           ),
-          child: Icon(
-            Icons.account_balance_wallet,
-            size: 24.v,
-            color: _getStatusColor(transaction.status),
-          ),
-        ),
-        title: CustomText(
-          title: transaction.transactionId,
-          size: 16.fSize,
-          color: AppColors.white,
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Gap.v(2),
-            CustomText(
-              title: transaction.status.capitalize(),
-              color: _getStatusColor(transaction.status),
+          child: ListTile(
+            onTap: () => _showTransactionDialog(transaction.id.toString()),
+            leading: CircleAvatar(
+              backgroundColor: AppColors.secondary,
+              radius: 30.fSize,
+              child: Center(
+                child: Image.asset(
+                  'assets/icons/WCC.png',
+                  scale: 5.v,
+                ),
+              ),
+            ),
+            // title: CustomText(
+            //   title: transaction.transactionId,
+            //   size: 16.fSize,
+            //   color: AppColors.white,
+            // ),
+            title: CustomText(
+              title:
+                  'Withdrawal of ${transaction.totalUc.toStringAsFixed(0)} UC',
+              color: AppColors.fontColor,
+              size: 17.fSize,
+              fontWeight: FontWeight.w600,
+            ),
+            subtitle: CustomText(
+              title: _formatDate(transaction.createdAt),
+              color: Colors.black.withOpacity(0.5),
               size: 14.fSize,
             ),
-            Gap.v(2),
-            CustomText(
-              title: transaction.message,
-              color: Colors.white.withOpacity(0.6),
-              size: 12.fSize,
-              maxLines: 2,
-              // overflow: TextOverflow.ellipsis,
-            ),
-            Gap.v(2),
-            CustomText(
-              title: _formatDate(transaction.createdAt),
-              color: Colors.white.withOpacity(0.5),
-              size: 11.fSize,
-            ),
-          ],
-        ),
-        trailing: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomText(
+            trailing: CustomText(
               size: 16.fSize,
               title: '-${transaction.withdrawCoins.toStringAsFixed(0)} coins',
-              color: _getStatusColor(transaction.status),
+              color: AppColors.red,
+              fontWeight: FontWeight.w600,
             ),
-            Gap.v(2),
-            CustomText(
-              size: 12.fSize,
-              title: '${transaction.totalUc.toStringAsFixed(0)} UC',
-              color: Colors.white.withOpacity(0.6),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -630,18 +614,22 @@ class _WithDrawlHistoryViewState extends State<WithDrawlHistoryView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const CustomText(
-          title: 'Withdrawal History',
-          size: 24,
-          color: AppColors.white,
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: AppColors.primary,
-        iconTheme: const IconThemeData(color: AppColors.white),
+      backgroundColor: AppColors.bgColor,
+      // appBar: AppBar(
+      //   title: const CustomText(
+      //     title: 'Withdrawal History',
+      //     size: 24,
+      //     color: AppColors.white,
+      //   ),
+      //   centerTitle: true,
+      //   elevation: 0,
+      //   backgroundColor: AppColors.primary,
+      //   iconTheme: const IconThemeData(color: AppColors.white),
+      // ),
+
+      appBar: CustomAppBar(
+        title: 'Withdrawal History',
       ),
-      backgroundColor: AppColors.primary,
       body: RefreshIndicator(
         onRefresh: _loadTransactions,
         color: AppColors.primary,
