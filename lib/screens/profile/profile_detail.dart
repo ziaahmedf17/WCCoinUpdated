@@ -15,8 +15,6 @@ class ProfileDetailView extends StatefulWidget {
   State<ProfileDetailView> createState() => _ProfileDetailViewState();
 }
 
-
-
 class _ProfileDetailViewState extends State<ProfileDetailView> {
   Map<String, dynamic>? userData;
   List<dynamic>? transactions;
@@ -137,96 +135,108 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                 )
               : userData == null
                   ? Center(child: _buildEmptyState())
-                  : Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        CircleAvatar(
-                          radius: 40,
-                          backgroundImage: userData!['avatar'] != null
-                              ? NetworkImage(userData!['avatar'])
-                              : const AssetImage("assets/images/demo.png")
-                                  as ImageProvider,
-                        ),
-                        Gap.v(15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomText(
-                              title: userData!['name'] ?? "No Name",
-                              size: 25,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ],
-                        ),
-                        CustomText(
-                          title: userData!['email'] ?? "",
-                          size: 14,
-                          color: const Color(0xffA0A6BD),
-                        ),
-                        const SizedBox(height: 20),
-
-                        // Cards
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  : SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          CircleAvatar(
+                            radius: 40,
+                            backgroundImage: userData!['avatar'] != null
+                                ? NetworkImage(userData!['avatar'])
+                                : const AssetImage("assets/images/demo.png")
+                                    as ImageProvider,
+                          ),
+                          Gap.v(15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              _iconCard(
-                                title: "Total Earn",
-                                image: "assets/icons/coin.png",
-                                subtitle: "${userData!['total_earn'] ?? 0}",
-                              ),
-                              _iconCard(
-                                title: "Total Redeem",
-                                image: "assets/icons/coin.png",
-
-                                subtitle:
-                                    "${userData!['total_radeem'] ?? 0}", // Fixed: using 'total_radeem' as in API response
+                              CustomText(
+                                title: userData!['name'] ?? "No Name",
+                                size: 25,
+                                fontWeight: FontWeight.bold,
                               ),
                             ],
                           ),
-                        ),
-                        Gap.v(30),
+                          CustomText(
+                            title: userData!['email'] ?? "",
+                            size: 14,
+                            color: const Color(0xffA0A6BD),
+                          ),
+                          const SizedBox(height: 20),
 
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: CustomText(
-                              title: 'Withdrawal History',
-                              size: 22,
-                              fontWeight: FontWeight.bold,
+                          // Cards
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                _iconCard(
+                                  title: "Total Earn",
+                                  image: "assets/icons/coin.png",
+                                  subtitle: "${userData!['total_earn'] ?? 0}",
+                                ),
+                                _iconCard(
+                                  title: "Total Redeem",
+                                  image: "assets/icons/coin.png",
+
+                                  subtitle:
+                                      "${userData!['total_radeem'] ?? 0}", // Fixed: using 'total_radeem' as in API response
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                        Gap.v(30),
-
-                        Expanded(
-                          child: (transactions != null &&
-                                  transactions!.isNotEmpty)
-                              ? ListView.builder(
-                                  itemCount: transactions!.length,
-                                  itemBuilder: (context, index) {
-                                    final transaction = transactions![index];
-                                    return ActivityTile(
-                                      image: "assets/images/withdrawal.png",
-                                      subtitle: transaction['status'] ?? "N/A",
-                                      tile: transaction['transaction_id'] ??
-                                          "Withdrawal Record",
-                                      traling:
-                                          "-${transaction['withdraw_coins'] ?? 0}",
-                                    );
-                                  },
-                                )
-                              : const Center(
-                                  child: CustomText(
-                                    title: "No withdrawal history",
-                                    size: 16,
-                                    color: Colors.white,
+                          Container(
+                            color: AppColors.bgColor,
+                            child: Column(
+                              children: [
+                                Gap.v(30),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: CustomText(
+                                      title: 'Withdrawal History',
+                                      size: 22,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
-                        )
-                      ],
+                                Gap.v(30),
+                                SizedBox(
+                                  height: SizeUtils.height,
+                                  child: (transactions != null &&
+                                          transactions!.isNotEmpty)
+                                      ? ListView.builder(
+                                          itemCount: transactions!.length,
+                                          itemBuilder: (context, index) {
+                                            final transaction =
+                                                transactions![index];
+                                            return ActivityTile(
+                                              image:
+                                                  "assets/images/withdrawal.png",
+                                              subtitle: transaction['status'] ??
+                                                  "N/A",
+                                              tile: transaction[
+                                                      'transaction_id'] ??
+                                                  "Withdrawal Record",
+                                              traling:
+                                                  "-${transaction['withdraw_coins'] ?? 0}",
+                                            );
+                                          },
+                                        )
+                                      : const Center(
+                                          child: CustomText(
+                                            title: "No withdrawal history",
+                                            size: 16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
     );
   }
@@ -260,16 +270,10 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
     return Container(
       width: 150.h,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          colors: [
-            Color(0xff791CFF),
-            Color(0xff270A61),
-          ],
-        ),
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(8),
       ),
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 20.v),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

@@ -203,8 +203,8 @@ class _LeaderboardViewState extends State<LeaderboardView> {
             decoration: BoxDecoration(
               // color: color.withOpacity(0.8),
               gradient: LinearGradient(
-                  colors: listColors, begin: AlignmentGeometry.topLeft),
-              borderRadius: BorderRadius.only(
+                  colors: listColors, begin: Alignment.topLeft),
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
               ),
@@ -267,9 +267,9 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                       topThree[1],
                       2,
                       25.v,
-                      Color(0xff6A7282),
+                      const Color(0xff6A7282),
                       12,
-                      listColors: [Color(0xffD1D5DC), Color(0xff6A7282)],
+                      listColors: [const Color(0xffD1D5DC), const Color(0xff6A7282)],
                     ),
                   ),
                 Gap.h(8),
@@ -280,9 +280,9 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                       topThree[0],
                       1,
                       42.v,
-                      Color(0xffD08700),
+                      const Color(0xffD08700),
                       0,
-                      listColors: [Color(0xffFDC700), Color(0xffD08700)],
+                      listColors: [const Color(0xffFDC700), const Color(0xffD08700)],
                     ),
                   ),
                 Gap.h(8),
@@ -293,9 +293,9 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                       topThree[2],
                       3,
                       25.v,
-                      Color(0xffF54900),
+                      const Color(0xffF54900),
                       24,
-                      listColors: [Color(0xffFF8904), Color(0xffF54900)],
+                      listColors: [const Color(0xffFF8904), const Color(0xffF54900)],
                     ),
                   ),
               ],
@@ -314,7 +314,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
     }
 
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.bgColor,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
@@ -442,7 +442,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bgColor,
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         title: 'Leaderboard',
         hasLeading: false,
       ),

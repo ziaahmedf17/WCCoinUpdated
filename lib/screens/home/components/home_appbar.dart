@@ -1,74 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:wc_coin_app/core/constants/colors.dart';
-// import 'package:wc_coin_app/core/constants/size_utils.dart';
-// import 'package:wc_coin_app/screens/notification/notification.dart';
-// import 'package:wc_coin_app/screens/profile/my_profile.dart';
-// import 'package:wc_coin_app/shared/text_view.dart';
-
-// class HomeAppBar extends StatelessWidget {
-//   const HomeAppBar({
-//     super.key,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return AppBar(
-//       toolbarHeight: 80.v,
-//       elevation: 0,
-//       leading: Padding(
-//         padding: EdgeInsets.only(top: 5.v, left: 17.h),
-//         child: GestureDetector(
-//           onTap: () {
-//             Navigator.push(context, MaterialPageRoute(
-//               builder: (context) {
-//                 return MyProfileView();
-//               },
-//             ));
-//           },
-//           child: CircleAvatar(
-//             radius: 18.v,
-//             backgroundImage: const NetworkImage(
-//                 'https://marketplace.canva.com/EAF21qlw744/1/0/1600w/canva-blue-modern-facebook-profile-picture-mtu4sNVuKIU.jpg'),
-//           ),
-//         ),
-//       ),
-//       backgroundColor: AppColors.primary,
-//       title: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           const CustomText(
-//             title: 'Hi, Zia Ahmed 👋',
-//             size: 16,
-//             height: 0,
-//           ),
-//           CustomText(
-//             title: 'Let’s Play, Win, Cash Out Your Luck\nYour Rewards!',
-//             size: 14,
-//             height: 0,
-//             fontWeight: FontWeight.w400,
-//             color: AppColors.white.withOpacity(.5),
-//           ),
-//         ],
-//       ),
-//       actions: [
-//         IconButton(
-//           onPressed: () {
-//             Navigator.push(context, MaterialPageRoute(
-//               builder: (context) {
-//                 return NotificationView();
-//               },
-//             ));
-//           },
-//           icon: Image.asset(
-//             'assets/icons/ntf.png',
-//             scale: 5.v,
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:wc_coin_app/core/constants/colors.dart';
 import 'package:wc_coin_app/core/constants/size_utils.dart';
@@ -93,7 +22,7 @@ class HomeAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppBar(
       toolbarHeight: 80.v,
-      elevation: 0,
+      elevation: .5,
       leading: Padding(
         padding: EdgeInsets.only(top: 5.v, left: 17.h),
         child: GestureDetector(
@@ -144,7 +73,7 @@ class HomeAppBar extends StatelessWidget {
                 ),
         ),
       ),
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.white,
       title: InkWell(
         onTap: () {
           Navigator.push(context, MaterialPageRoute(
@@ -156,21 +85,6 @@ class HomeAppBar extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            isLoading
-                ? Container(
-                    height: 16,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  )
-                : CustomText(
-                    title: 'Hi, ${user?.name ?? 'Guest'} 👋',
-                    size: 16,
-                    height: 0,
-                  ),
-            Gap.v(2),
             isLoading
                 ? Column(
                     children: [
@@ -194,49 +108,32 @@ class HomeAppBar extends StatelessWidget {
                     ],
                   )
                 : CustomText(
-                    title: "Let's Play, Win, Cash Out Your Luck\nYour Rewards!",
+                    title: "Welcome back",
                     size: 14,
                     height: 0,
                     fontWeight: FontWeight.w400,
-                    color: AppColors.white.withOpacity(.5),
+                    color: AppColors.fontColor.withOpacity(.5),
+                  ),
+            Gap.v(2),
+            isLoading
+                ? Container(
+                    height: 16,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  )
+                : CustomText(
+                    title: user?.name ?? 'Guest',
+                    size: 16,
+                    height: 0,
+                    fontWeight: FontWeight.w600,
                   ),
           ],
         ),
       ),
       actions: [
-        // Display coins if available
-        // if (!isLoading && user?.coins != null)
-        //   Padding(
-        //     padding: EdgeInsets.only(right: 10.h),
-        //     child: Container(
-        //       padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 4.v),
-        //       decoration: BoxDecoration(
-        //         color: Colors.orange.withOpacity(0.2),
-        //         borderRadius: BorderRadius.circular(12),
-        //         border: Border.all(
-        //           color: Colors.orange,
-        //           width: 1,
-        //         ),
-        //       ),
-        //       child: Row(
-        //         mainAxisSize: MainAxisSize.min,
-        //         children: [
-        //           Icon(
-        //             Icons.monetization_on,
-        //             color: Colors.orange,
-        //             size: 16.v,
-        //           ),
-        //           Gap.h(4),
-        //           CustomText(
-        //             title: '${user!.coins}',
-        //             size: 12,
-        //             color: Colors.orange,
-        //             fontWeight: FontWeight.bold,
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   ),
         IconButton(
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(
@@ -247,19 +144,10 @@ class HomeAppBar extends StatelessWidget {
           },
           icon: Image.asset(
             'assets/icons/ntf.png',
-            scale: 7.v,
+            scale: 5.v,
           ),
         ),
-        // Refresh button for debugging/manual refresh
-        // if (onRefresh != null)
-        // IconButton(
-        //   onPressed: onRefresh,
-        //   icon: Icon(
-        //     Icons.refresh,
-        //     color: Colors.white.withOpacity(0.7),
-        //     size: 25.v,
-        //   ),
-        // ),
+        Gap.h(20),
       ],
     );
   }
