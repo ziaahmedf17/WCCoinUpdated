@@ -40,41 +40,70 @@ class QuizService {
     }
   }
 
-  Future<Map<String, dynamic>> submitAnswer(
-      int quizId, int optionId, BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('api_token');
+  // Future<Map<String, dynamic>> submitAnswer(
+  //     int quizId, int optionId, BuildContext context) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final token = prefs.getString('api_token');
 
-    if (token == null) {
-      throw Exception("No API token found");
-    }
+  //   if (token == null) {
+  //     throw Exception("No API token found");
+  //   }
 
-    final response = await http.post(
-      Uri.parse(_url),
-      headers: {
-        "Authorization": "Bearer $token",
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      },
-      body: json.encode({"quiz_id": quizId, "option_id": optionId}),
-    );
+  //   final response = await http.post(
+  //     Uri.parse(_url),
+  //     headers: {
+  //       "Authorization": "Bearer $token",
+  //       "Accept": "application/json",
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: json.encode({"quiz_id": quizId, "option_id": optionId}),
+  //   );
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+  //   if (response.statusCode == 200) {
+  //     final data = json.decode(response.body);
 
-      // ✅ Show API message in snackbar
-      if (data["message"] != null) {
-        showCustomSnackBar(data["message"], context, isError: false);
-      }
+  //     final message = data["message"].toString().trim().toLowerCase();
 
-      return data;
-    } else {
-      final data = json.decode(response.body);
+  //     if (message.contains('correct')) {
+  //       showCustomSnackBar(data["message"], context, isError: false);
+  //     } else if (message.contains('incorrect')) {
+  //       showCustomSnackBar(data["message"], context, isError: true);
+  //     }
 
-      if (data["message"] != 'Correct answer') {
-        showCustomSnackBar(data["message"], context, isError: true);
-      }
-      throw Exception("Failed to submit answer: ${response.statusCode}");
-    }
+  //     return data;
+  //   } else {
+  //     throw Exception("Failed to submit answer: ${response.statusCode}");
+  //   }
+  // }
+
+Future<Map<String, dynamic>> submitAnswer(
+  int quizId,
+  int optionId,
+) async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('api_token');
+
+  if (token == null) {
+    throw Exception("No API token found");
   }
+
+  final response = await http.post(
+    Uri.parse(_url),
+    headers: {
+      "Authorization": "Bearer $token",
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+    },
+    body: json.encode({
+      "quiz_id": quizId,
+      "option_id": optionId,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    return json.decode(response.body);
+  } else {
+    throw Exception("Failed to submit answer");
+  }
+}
 }

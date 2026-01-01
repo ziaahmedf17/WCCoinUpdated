@@ -468,6 +468,7 @@ class _SpinAndWinViewState extends State<SpinAndWinView>
                 const CustomText(
                   title: 'Watch Ad to double your Reward',
                   size: 15,
+                  color: AppColors.white,
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -488,6 +489,7 @@ class _SpinAndWinViewState extends State<SpinAndWinView>
                             child: CustomText(
                           title: 'Continue',
                           color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
                         )),
                       ),
                     ),
@@ -512,8 +514,9 @@ class _SpinAndWinViewState extends State<SpinAndWinView>
                         ),
                         child: const Center(
                             child: CustomText(
-                          title: '2x Your Reward',
+                          title: '2x Reward',
                           color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
                         )),
                       ),
                     ),
@@ -537,6 +540,7 @@ class _SpinAndWinViewState extends State<SpinAndWinView>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Fortune Wheel
+            Gap.v(25),
             Container(
               height: 300,
               width: 300,
@@ -641,7 +645,7 @@ class _SpinAndWinViewState extends State<SpinAndWinView>
                   ? 'Spin the wheel to win coins!'
                   : 'Please wait for the timer',
               size: 16,
-              color: Colors.white70,
+              color: AppColors.primary,
             ),
 
             Gap.v(20),
@@ -650,12 +654,12 @@ class _SpinAndWinViewState extends State<SpinAndWinView>
             _isLoading
                 ? Column(
                     children: [
-                      const CircularProgressIndicator(color: Colors.white),
+                      const CircularProgressIndicator(color: AppColors.primary),
                       Gap.v(10),
                       CustomText(
                         title: _isSpinning ? 'Spinning...' : 'Processing...',
                         size: 16,
-                        color: Colors.white70,
+                        color: AppColors.primary,
                       ),
                     ],
                   )
@@ -665,7 +669,6 @@ class _SpinAndWinViewState extends State<SpinAndWinView>
                         : AlwaysStoppedAnimation(1.0),
                     child: Opacity(
                       opacity: _canClaim ? 1.0 : 0.5,
-
                       child: PrimaryBTN(
                           btColor: AppColors.secondary,
                           onCLick: _canClaim
@@ -683,34 +686,33 @@ class _SpinAndWinViewState extends State<SpinAndWinView>
                                     _spinWheel();
                                   }
                                 }
-                              : null,
+                              : () {},
                           buttonTitle: _canClaim ? 'Spin Now' : 'Wait...'),
-
-                      // child: CustomBTN(
-                      //   ontap: _canClaim
-                      //       ? () async {
-                      //           if (apads['int']) {
-                      //             if (await isReady()) {
-                      //               InterstitialAdLoading.show(context,
-                      //                   onComplete: () {
-                      //                 _spinWheel();
-                      //               }, onFailed: () {
-                      //                 _spinWheel();
-                      //               });
-                      //             } else {
-                      //               _spinWheel();
-                      //             }
-                      //           } else {
-                      //             _spinWheel();
-                      //           }
-                      //         }
-                      //       : null,
-                      //   text: _canClaim ? 'Spin Now' : 'Wait...',
-                      //   size: 3,
-                      //   textSize: 23,
-                      // ),
                     ),
                   ),
+            Gap.v(10),
+
+            Container(
+              margin: const EdgeInsets.all(20),
+              padding: EdgeInsets.symmetric(vertical: 10.v, horizontal: 12.h),
+              width: SizeUtils.width,
+              // height: 150.v,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.primary.withOpacity(.3)),
+                  gradient: const LinearGradient(
+                      colors: [Color(0xffEFF6FF), Color(0xffFFF7ED)])),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Gap.v(10),
+                  CustomText(
+                    title: '💡 Tap the button to spin the wheel and win coins!',
+                  ),
+                  Gap.v(10),
+                ],
+              ),
+            )
           ],
         ),
       ),

@@ -10,6 +10,7 @@ import 'package:wc_coin_app/core/constants/size_utils.dart';
 import 'package:wc_coin_app/main.dart';
 import 'package:wc_coin_app/screens/quiz/quiz_result.dart';
 import 'package:wc_coin_app/shared/custom_appbar.dart';
+import 'package:wc_coin_app/shared/primary_btn.dart';
 import 'package:wc_coin_app/shared/snackbar.dart';
 import 'package:wc_coin_app/shared/text_view.dart';
 
@@ -346,6 +347,7 @@ class _QuizViewState extends State<QuizView>
                 CustomText(
                   title: 'Watch Ad to double your Reward',
                   size: 15,
+                  color: AppColors.white,
                 ),
                 Row(
                   children: [
@@ -377,6 +379,8 @@ class _QuizViewState extends State<QuizView>
                             child: CustomText(
                           title: 'Continue',
                           color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                          size: 14,
                         )),
                       ),
                     ),
@@ -414,8 +418,10 @@ class _QuizViewState extends State<QuizView>
                         ),
                         child: const Center(
                             child: CustomText(
-                          title: '2x Your Reward',
+                          title: '2x Reward',
                           color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                          size: 14,
                         )),
                       ),
                     ),
@@ -445,10 +451,10 @@ class _QuizViewState extends State<QuizView>
     final selectedOption = currentQuiz.options[selectedAnswerIndex!];
 
     try {
-      final result = await QuizService()
-          .submitAnswer(currentQuiz.id, selectedOption.id, context);
+      final result =
+          await QuizService().submitAnswer(currentQuiz.id, selectedOption.id);
 
-      final bool isCorrect = result["correct"] == 1;
+      final bool isCorrect = result["correct"] == true;
       final int reward = result["reward_coin"] ?? 0;
       final int total = result["total_coins"] ?? 0;
       final String apiMessage = result["message"] ?? "";
@@ -461,7 +467,13 @@ class _QuizViewState extends State<QuizView>
 
       // Show API message for both correct and incorrect answers
       if (apiMessage.isNotEmpty) {
-        showCustomSnackBar(apiMessage, context, isError: !isCorrect);
+        final String apiMessage = result["message"] ?? "";
+
+        showCustomSnackBar(
+          apiMessage,
+          context,
+          isError: !isCorrect,
+        );
       } else {
         // Fallback messages if API message is empty
         if (isCorrect) {
@@ -517,14 +529,25 @@ class _QuizViewState extends State<QuizView>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: "Quiz Screen"),
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.bgColor,
       body: SafeArea(
         child: FutureBuilder<List<Quiz>>(
           future: quizzesFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
-                child: CircularProgressIndicator(color: Colors.white),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(color: AppColors.primary),
+                    SizedBox(height: 20),
+                    CustomText(
+                      title: 'Loading Quizzes...',
+                      size: 16,
+                      color: AppColors.primary,
+                    ),
+                  ],
+                ),
               );
             } else if (snapshot.hasError) {
               return Center(
@@ -552,7 +575,7 @@ class _QuizViewState extends State<QuizView>
               return const Center(
                 child: CustomText(
                   title: "No quizzes available",
-                  color: Colors.white,
+                  color: AppColors.primary,
                   size: 16,
                 ),
               );
@@ -563,193 +586,231 @@ class _QuizViewState extends State<QuizView>
 
             return Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  // Timer indicator at the top
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: _canClaim
-                          ? Colors.green.withOpacity(0.2)
-                          : Colors.orange.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: _canClaim ? Colors.green : Colors.orange,
-                        width: 2,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          _canClaim ? Icons.check_circle : Icons.timer,
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    // Timer indicator at the top
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: _canClaim
+                            ? Colors.green.withOpacity(0.2)
+                            : Colors.orange.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
                           color: _canClaim ? Colors.green : Colors.orange,
-                          size: 24,
-                        ),
-                        const SizedBox(width: 8),
-                        CustomText(
-                          title: _formatTime(),
-                          size: 16,
-                          color: _canClaim ? Colors.green : Colors.orange,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Gap.v(10),
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(32)),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 50,
-                          width: 50,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              CircularProgressIndicator(
-                                value: (currentIndex + 1) / quizzes.length,
-                                backgroundColor: Colors.deepPurple[200],
-                                valueColor: const AlwaysStoppedAnimation(
-                                    Color(0xff270A61)),
-                                strokeWidth: 8,
-                              ),
-                              CustomText(
-                                title: "${currentIndex + 1}",
-                                size: 25.fSize,
-                                color: Colors.black,
-                              )
-                            ],
-                          ),
-                        ),
-                        Gap.v(10),
-                        CustomText(
-                          title:
-                              "QUESTION ${currentIndex + 1} OF ${quizzes.length}",
-                          color: const Color(0XFF858494),
-                          size: 20.fSize,
-                        ),
-                        Gap.v(5),
-                        CustomText(
-                          size: 20.fSize,
-                          color: Colors.black,
-                          alignment: TextAlign.center,
-                          title: quiz.question,
-                        ),
-                        const SizedBox(height: 30),
-                      ],
-                    ),
-                  ),
-                  Gap.v(10),
-                  ...List.generate(quiz.options.length, (index) {
-                    final isSelected = selectedAnswerIndex == index;
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: GestureDetector(
-                        onTap: _canClaim
-                            ? () {
-                                setState(() {
-                                  selectedAnswerIndex = index;
-                                });
-                              }
-                            : null,
-                        child: Opacity(
-                          opacity: _canClaim ? 1.0 : 0.5,
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            decoration: BoxDecoration(
-                              color:
-                                  isSelected ? Colors.deepPurple : Colors.white,
-                              borderRadius: BorderRadius.circular(30),
-                              border: isSelected
-                                  ? Border.all(color: Colors.white, width: 2)
-                                  : null,
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: CustomText(
-                                size: 22.fSize,
-                                title: quiz.options[index].text,
-                                fontWeight: FontWeight.w500,
-                                color:
-                                    isSelected ? Colors.white : Colors.black87,
-                              ),
-                            ),
-                          ),
+                          width: 2,
                         ),
                       ),
-                    );
-                  }),
-                  Gap.v(10),
-                  isSubmitting
-                      ? Container(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            _canClaim ? Icons.check_circle : Icons.timer,
+                            color: _canClaim ? Colors.green : Colors.orange,
+                            size: 24,
+                          ),
+                          const SizedBox(width: 8),
+                          CustomText(
+                            title: _formatTime(),
+                            size: 16,
+                            color: _canClaim ? Colors.green : Colors.orange,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Gap.v(10),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 5.h),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                        child: Material(
+                          elevation: 5,
+                          borderRadius: BorderRadius.circular(32),
+                          child: Column(
                             children: [
-                              SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
+                              Gap.v(20),
+                              CircleAvatar(
+                                radius: 40.fSize,
+                                backgroundColor: AppColors.secondary,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    CircularProgressIndicator(
+                                      value:
+                                          (currentIndex + 1) / quizzes.length,
+                                      backgroundColor:
+                                          AppColors.white.withOpacity(.3),
+                                      valueColor: const AlwaysStoppedAnimation(
+                                          AppColors.white),
+                                      strokeWidth: 3,
+                                    ),
+                                    CustomText(
+                                      title: "${currentIndex + 1}",
+                                      size: 20.fSize,
+                                      color: AppColors.white,
+                                    )
+                                  ],
                                 ),
                               ),
-                              SizedBox(width: 12),
+                              Gap.v(15),
                               CustomText(
-                                title: 'Submitting...',
-                                size: 16,
-                                color: Colors.white,
+                                title:
+                                    "QUESTION ${currentIndex + 1} OF ${quizzes.length}",
+                                color: const Color(0XFF858494),
+                                size: 20.fSize,
+                                fontWeight: FontWeight.w500,
                               ),
+                              Gap.v(5),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10.h),
+                                child: CustomText(
+                                  size: 23.fSize,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600,
+                                  alignment: TextAlign.center,
+                                  title: quiz.question,
+                                ),
+                              ),
+                              const SizedBox(height: 30),
                             ],
                           ),
-                        )
-                      : ScaleTransition(
-                          scale: _canClaim
-                              ? _scaleAnimation
-                              : AlwaysStoppedAnimation(1.0),
+                        ),
+                      ),
+                    ),
+                    Gap.v(10),
+                    ...List.generate(quiz.options.length, (index) {
+                      final isSelected = selectedAnswerIndex == index;
+                      return Padding(
+                        // padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 5.h, vertical: 8.v),
+
+                        child: GestureDetector(
+                          onTap: _canClaim
+                              ? () {
+                                  setState(() {
+                                    selectedAnswerIndex = index;
+                                  });
+                                }
+                              : null,
                           child: Opacity(
                             opacity: _canClaim ? 1.0 : 0.5,
-                            child: GestureDetector(
-                              onTap: _canClaim
-                                  ? () => _nextQuestion(quizzes)
-                                  : null,
-                              child: Image.asset(
-                                "assets/images/button.png",
-                                scale: 5.v,
+                            child: Material(
+                              elevation: 5,
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                width: double.infinity,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? AppColors.primary
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: isSelected
+                                      ? Border.all(
+                                          color: Colors.white, width: 2)
+                                      : null,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20.0),
+                                  child: CustomText(
+                                    size: 22.fSize,
+                                    title: quiz.options[index].text,
+                                    fontWeight: FontWeight.w600,
+                                    color: isSelected
+                                        ? Colors.white
+                                        : Colors.black87,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        )
-                ],
+                        ),
+                      );
+                    }),
+                    Gap.v(10),
+                    isSubmitting
+                        ? Container(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.primary,
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                                SizedBox(width: 12),
+                                CustomText(
+                                  title: 'Submitting...',
+                                  size: 16,
+                                  color: AppColors.primary,
+                                ),
+                              ],
+                            ),
+                          )
+                        : ScaleTransition(
+                            scale: _canClaim
+                                ? _scaleAnimation
+                                : AlwaysStoppedAnimation(1.0),
+                            child: Opacity(
+                              opacity: _canClaim ? 1.0 : 0.5,
+                              // child: GestureDetector(
+                              // onTap: _canClaim
+                              //     ? () => _nextQuestion(quizzes)
+                              //     : null,
+                              // child: Image.asset(
+                              //   "assets/images/button.png",
+                              //   scale: 5.v,
+                              // ),
+                              // ),
+
+                              child: PrimaryBTN(
+                                btColor: AppColors.secondary,
+                                buttonTitle: 'Continue',
+                                onCLick: _canClaim
+                                    ? () => _nextQuestion(quizzes)
+                                    : () {},
+                              ),
+                            ),
+                          )
+                  ],
+                ),
               ),
             );
           },
         ),
       ),
-      bottomNavigationBar: apads['banner']
-          ? Container(
-              // color: AppColors.white,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Gap.v(5),
-                  const CustomText(
-                    title: 'Advertisement',
-                    // color: AppColors.fontColor,
-                  ),
-                  Gap.v(5),
-                  const BannerAD(),
-                  Gap.v(5),
-                ],
-              ),
-            )
-          : SizedBox(),
+      // bottomNavigationBar: apads['banner']
+      //     ? Container(
+      //         // color: AppColors.white,
+      //         child: Column(
+      //           mainAxisSize: MainAxisSize.min,
+      //           children: [
+      //             // Gap.v(5),
+      //             const CustomText(
+      //               title: 'Advertisement',
+      //               // color: AppColors.fontColor,
+      //             ),
+      //             Gap.v(5),
+      //             const BannerAD(),
+      //             Gap.v(5),
+      //           ],
+      //         ),
+      //       )
+      //     : SizedBox(),
     );
   }
 }

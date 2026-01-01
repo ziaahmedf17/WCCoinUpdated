@@ -73,7 +73,7 @@ class _HomeViewState extends State<HomeView>
     'Watch & Win',
     'Visit to Earn',
     'Social Rewards',
-    'Enter Promo Code',
+    'Promo Code',
     'Redeem UC',
   ];
 
@@ -84,7 +84,7 @@ class _HomeViewState extends State<HomeView>
     'TAP TO WATCH',
     'TAP TO VISIT',
     'TAP TO SUBSCRIBE',
-    'ENTER PROMO CODE',
+    'PROMO CODE',
     'REDEEM PUBG UC',
   ];
 
@@ -789,7 +789,7 @@ class _HomeViewState extends State<HomeView>
                               crossAxisCount: 2,
                               crossAxisSpacing: 35.h,
                               mainAxisSpacing: 20.v,
-                              childAspectRatio: .65,
+                              childAspectRatio: .73,
                             ),
                             itemCount: 8,
                             scrollDirection: Axis.vertical,
@@ -799,160 +799,158 @@ class _HomeViewState extends State<HomeView>
                               bool isWatchAd = index == 3;
                               bool canUseCard = isWatchAd ? _canClaimAd : true;
 
-                              return ScaleTransition(
-                                scale: (isWatchAd && _canClaimAd)
-                                    ? _adScaleAnimation
-                                    : AlwaysStoppedAnimation(1.0),
-                                child: Opacity(
-                                  opacity: canUseCard ? 1.0 : 0.7,
-                                  child: SizedBox(
-                                    height: 300.v,
-                                    width: double.infinity,
-                                    child: Stack(
-                                      fit: StackFit.expand,
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.symmetric(
-                                                  horizontal: 0)
-                                              .copyWith(top: 10.v),
-                                          height: 241.v,
-                                          width: 150.h,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xff270A61),
-                                            borderRadius:
-                                                BorderRadius.circular(17),
-                                            border: (isWatchAd && _canClaimAd)
-                                                ? Border.all(
-                                                    color: Colors.green
-                                                        .withOpacity(0.5),
-                                                    width: 2)
-                                                : null,
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Gap.v(13),
-                                              Image.asset(
-                                                'assets/images/${img[index]}',
-                                                scale: 5.2.v,
-                                              ),
-                                              Gap.v(10),
-                                              CustomText(
-                                                title: nameText[index],
-                                                size: 18,
-                                              ),
-                                              Gap.v(5),
-                                              CustomText(
-                                                title: isWatchAd
-                                                    ? (_canClaimAd
-                                                        ? 'Ready!'
-                                                        : _formatAdTime())
-                                                    : 'Win up to 250 Coins',
-                                                size: 10,
-                                                color: isWatchAd
-                                                    ? (_canClaimAd
-                                                        ? Colors.green
-                                                        : Colors.orange)
-                                                    : Colors.white,
-                                              )
-                                            ],
-                                          ),
+                              return Material(
+                                elevation: 5,
+                                borderRadius: BorderRadius.circular(17),
+                                child: ScaleTransition(
+                                  scale: (isWatchAd && _canClaimAd)
+                                      ? _adScaleAnimation
+                                      : AlwaysStoppedAnimation(1.0),
+                                  child: Opacity(
+                                    opacity: canUseCard ? 1.0 : 0.7,
+                                    child: SizedBox(
+                                      height: 300.v,
+                                      width: double.infinity,
+                                      child: Container(
+                                        height: 241.v,
+                                        width: 150.h,
+                                        decoration: BoxDecoration(
+                                          color: gradients[index],
+                                          borderRadius:
+                                              BorderRadius.circular(17),
+                                          border: (isWatchAd && _canClaimAd)
+                                              ? Border.all(
+                                                  color: Colors.green
+                                                      .withOpacity(0.5),
+                                                  width: 2)
+                                              : null,
                                         ),
-                                        Positioned(
-                                          bottom: 0,
-                                          right: 0,
-                                          left: 0,
-                                          child: CustomBTN(
-                                            ontap: () async {
-                                              if (index == 0) {
-                                                final result =
-                                                    await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return const SpinAndWinView();
-                                                  },
-                                                ));
-                                                if (result == true)
-                                                  _updateCoins();
-                                              } else if (index == 1) {
-                                                final result =
-                                                    await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return const ScratchCardView();
-                                                  },
-                                                ));
-                                                if (result == true)
-                                                  _updateCoins();
-                                              } else if (index == 2) {
-                                                final result =
-                                                    await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return const QuizView();
-                                                  },
-                                                ));
-                                                if (result == true)
-                                                  _updateCoins();
-                                              } else if (index == 3) {
-                                                // Watch & Win - Show confirmation dialog first
+                                        child: Column(
+                                          children: [
+                                            Gap.v(13),
+                                            Image.asset(
+                                              'assets/images/${img[index]}',
+                                              scale: 5.2.v,
+                                            ),
+                                            Gap.v(10),
+                                            CustomText(
+                                              title: nameText[index],
+                                              fontWeight: FontWeight.w600,
+                                              size: 18,
+                                            ),
+                                            Gap.v(5),
+                                            CustomText(
+                                              title: isWatchAd
+                                                  ? (_canClaimAd
+                                                      ? 'Ready!'
+                                                      : _formatAdTime())
+                                                  : 'Win up to 250 Coins',
+                                              size: 12,
+                                              fontWeight: FontWeight.w400,
+                                              color: isWatchAd
+                                                  ? (_canClaimAd
+                                                      ? Colors.green
+                                                      : Colors.orange)
+                                                  : AppColors.fontColor
+                                                      .withOpacity(.6),
+                                            ),
+                                            Gap.v(30),
+                                            PrimaryBTN(
+                                              width: 140,
+                                              height: 40,
+                                              fontSize: 14,
+                                              btColor: AppColors.secondary,
+                                              onCLick: () async {
+                                                if (index == 0) {
+                                                  final result =
+                                                      await Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return const SpinAndWinView();
+                                                    },
+                                                  ));
+                                                  if (result == true)
+                                                    _updateCoins();
+                                                } else if (index == 1) {
+                                                  final result =
+                                                      await Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return const ScratchCardView();
+                                                    },
+                                                  ));
+                                                  if (result == true)
+                                                    _updateCoins();
+                                                } else if (index == 2) {
+                                                  final result =
+                                                      await Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return const QuizView();
+                                                    },
+                                                  ));
+                                                  if (result == true)
+                                                    _updateCoins();
+                                                } else if (index == 3) {
+                                                  // Watch & Win - Show confirmation dialog first
 
-                                                (isWatchAd && _canClaimAd)
-                                                    ? _showConfirmationDialog()
-                                                    : () {};
-                                              } else if (index == 6) {
-                                                final result =
-                                                    await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return const EnterPromoCodeView();
-                                                  },
-                                                ));
-                                                if (result == true)
-                                                  _updateCoins();
-                                              } else if (index == 7) {
-                                                final result =
-                                                    await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return const RedeemUCView();
-                                                  },
-                                                ));
-                                                if (result == true)
-                                                  _updateCoins();
-                                              } else if (index == 4) {
-                                                final result =
-                                                    await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return const VisitToEarnView();
-                                                  },
-                                                ));
-                                                if (result == true)
-                                                  _updateCoins();
-                                              } else if (index == 5) {
-                                                final result =
-                                                    await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return const SubscribeToEarnView();
-                                                  },
-                                                ));
-                                                if (result == true)
-                                                  _updateCoins();
-                                              }
-                                            },
-                                            text: nameTap[index],
-                                          ),
-                                        )
-                                      ],
+                                                  (isWatchAd && _canClaimAd)
+                                                      ? _showConfirmationDialog()
+                                                      : () {};
+                                                } else if (index == 6) {
+                                                  final result =
+                                                      await Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return const EnterPromoCodeView();
+                                                    },
+                                                  ));
+                                                  if (result == true)
+                                                    _updateCoins();
+                                                } else if (index == 7) {
+                                                  final result =
+                                                      await Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return const RedeemUCView();
+                                                    },
+                                                  ));
+                                                  if (result == true)
+                                                    _updateCoins();
+                                                } else if (index == 4) {
+                                                  final result =
+                                                      await Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return const VisitToEarnView();
+                                                    },
+                                                  ));
+                                                  if (result == true)
+                                                    _updateCoins();
+                                                } else if (index == 5) {
+                                                  final result =
+                                                      await Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return const SubscribeToEarnView();
+                                                    },
+                                                  ));
+                                                  if (result == true)
+                                                    _updateCoins();
+                                                }
+                                              },
+                                              buttonTitle: nameTap[index],
+                                            )
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),

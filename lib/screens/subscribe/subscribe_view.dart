@@ -279,8 +279,19 @@ class _SubscribeToEarnViewState extends State<SubscribeToEarnView>
 
   Widget _buildLoadingWidget() {
     return const Center(
-      child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+          ),
+          SizedBox(height: 20),
+          CustomText(
+            title: 'Loading Links...',
+            size: 16,
+            color: AppColors.primary,
+          ),
+        ],
       ),
     );
   }
@@ -314,7 +325,7 @@ class _SubscribeToEarnViewState extends State<SubscribeToEarnView>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: "Social Rewards"),
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.bgColor,
       body: Column(
         children: [
           // Timer Display at the top
@@ -391,7 +402,7 @@ class _SubscribeToEarnViewState extends State<SubscribeToEarnView>
                           padding: const EdgeInsets.symmetric(
                               horizontal: 15, vertical: 15),
                           decoration: BoxDecoration(
-                            color: AppColors.white.withOpacity(0.1),
+                            color: AppColors.white,
                             borderRadius: BorderRadius.circular(12),
                             border: _canClaim
                                 ? Border.all(
@@ -406,14 +417,15 @@ class _SubscribeToEarnViewState extends State<SubscribeToEarnView>
                             title: CustomText(
                               title: "Earn ${social.coins} Coins",
                               size: 18,
-                              color: Colors.white,
+                              color: AppColors.fontColor,
+                              fontWeight: FontWeight.w600,
                             ),
                             subtitle: CustomText(
                               title: "Platform: ${social.platform}\n"
                                   "Status: ${social.status}\n"
                                   "Added: $formattedDate",
                               size: 14,
-                              color: Colors.white70,
+                              color: AppColors.fontColor,
                             ),
                             trailing: GestureDetector(
                               onTap: () => _handleButtonTap(social),

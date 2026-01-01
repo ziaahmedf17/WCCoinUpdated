@@ -31,13 +31,13 @@ class _RecentActivitiesState extends State<RecentActivities> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
           ),
           Gap.v(20),
           const CustomText(
             title: 'Loading Activities...',
             size: 16,
-            color: AppColors.white,
+            color: AppColors.primary,
           ),
         ],
       ),

@@ -29,13 +29,13 @@ class _NotificationViewState extends State<NotificationView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
           ),
           Gap.v(20),
           const CustomText(
             title: 'Loading Announcement...',
             size: 16,
-            color: AppColors.white,
+            color: AppColors.primary,
           ),
         ],
       ),

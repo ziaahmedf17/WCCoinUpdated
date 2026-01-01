@@ -139,12 +139,19 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                       child: Column(
                         children: [
                           const SizedBox(height: 20),
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundImage: userData!['avatar'] != null
-                                ? NetworkImage(userData!['avatar'])
-                                : const AssetImage("assets/images/demo.png")
-                                    as ImageProvider,
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            decoration: const BoxDecoration(
+                              color: AppColors.fontColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: CircleAvatar(
+                              radius: 40,
+                              backgroundImage: userData!['avatar'] != null
+                                  ? NetworkImage(userData!['avatar'])
+                                  : const AssetImage("assets/images/demo.png")
+                                      as ImageProvider,
+                            ),
                           ),
                           Gap.v(15),
                           Row(
@@ -154,15 +161,16 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                                 title: userData!['name'] ?? "No Name",
                                 size: 25,
                                 fontWeight: FontWeight.bold,
+                                color: AppColors.white,
                               ),
                             ],
                           ),
                           CustomText(
                             title: userData!['email'] ?? "",
                             size: 14,
-                            color: const Color(0xffA0A6BD),
+                            color: AppColors.white,
                           ),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20.v),
 
                           // Cards
                           Padding(
@@ -185,6 +193,8 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                               ],
                             ),
                           ),
+                          Gap.v(45),
+
                           Container(
                             color: AppColors.bgColor,
                             child: Column(
@@ -212,8 +222,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                                             final transaction =
                                                 transactions![index];
                                             return ActivityTile(
-                                              image:
-                                                  "assets/images/withdrawal.png",
+                                              image: "assets/icons/WCC.png",
                                               subtitle: transaction['status'] ??
                                                   "N/A",
                                               tile: transaction[
@@ -247,18 +256,61 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
     required String subtitle,
     required String traling,
   }) {
-    return ListTile(
-      leading: Image.asset(image),
-      title: CustomText(
-        title: tile,
-        size: 22.fSize,
+    return Container(
+      margin: EdgeInsets.only(bottom: 18.v, left: 20, right: 20),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16),
       ),
-      subtitle: CustomText(
-        title: subtitle,
-        color: Colors.white.withOpacity(0.6),
+      child: Material(
+        elevation: 5,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.v, horizontal: 12.h),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(0),
+            leading: CircleAvatar(
+              radius: 30.fSize,
+              backgroundColor: AppColors.secondary,
+              child: Center(
+                child: Image.asset(
+                  image,
+                  scale: 6.5.v,
+                ),
+              ),
+            ),
+            title: CustomText(
+              title: tile,
+              height: 0,
+              size: 22.fSize,
+              fontWeight: FontWeight.bold,
+            ),
+            subtitle: Padding(
+              padding: EdgeInsets.symmetric(vertical: 7.v),
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 5.v, horizontal: 12.h),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40),
+                    color: AppColors.secondary.withOpacity(.1),
+                    border:
+                        Border.all(color: AppColors.secondary.withOpacity(.4))),
+                child: CustomText(
+                  title: subtitle,
+                  color: AppColors.secondary,
+                  fontWeight: FontWeight.bold,
+                  alignment: TextAlign.center,
+                ),
+              ),
+            ),
+            trailing: CustomText(
+              size: 25.fSize,
+              title: traling,
+              color: AppColors.red,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
       ),
-      trailing:
-          CustomText(size: 20.fSize, title: traling, color: AppColors.white),
     );
   }
 
@@ -268,24 +320,41 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
     required String subtitle,
   }) {
     return Container(
-      width: 150.h,
+      width: 180.h,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(16),
       ),
       padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 20.v),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(image, scale: 5.v),
-          const SizedBox(height: 8),
+          Image.asset(image, scale: 3.v),
+          SizedBox(height: 12.v),
           CustomText(
             title: title,
-            size: 20.fSize,
-            fontWeight: FontWeight.bold,
+            size: 17.fSize,
+            fontWeight: FontWeight.w500,
+            color: AppColors.fontColor.withOpacity(.7),
             alignment: TextAlign.center,
           ),
-          CustomText(title: subtitle),
+          SizedBox(height: 12.v),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomText(
+                title: subtitle,
+                fontWeight: FontWeight.bold,
+                size: 21,
+                height: 0,
+              ),
+              Gap.h(10),
+              Image.asset(
+                "assets/icons/coin.png",
+                scale: 5.v,
+              )
+            ],
+          ),
         ],
       ),
     );

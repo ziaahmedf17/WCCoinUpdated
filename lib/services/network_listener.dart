@@ -44,7 +44,7 @@ class ConnectivityHelper {
             borderRadius: BorderRadius.circular(20),
           ),
           elevation: 100,
-          backgroundColor: AppColors.primary,
+          backgroundColor: AppColors.bgColor,
           content: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -60,24 +60,25 @@ class ConnectivityHelper {
                 title: 'No Internet',
                 fontWeight: FontWeight.bold,
                 size: 28,
-                color: Colors.white,
+                color: AppColors.fontColor,
               ),
               Gap.v(15),
               const CustomText(
                 title: 'Please check your network settings\nand try again',
                 alignment: TextAlign.center,
                 size: 16,
-                color: Colors.white70,
+                color: AppColors.fontColor,
               ),
               Gap.v(25),
-              CustomBTN(
-                ontap: () {
+              PrimaryBTN(
+                onCLick: () {
                   Navigator.of(context).pop();
                   if (onRetry != null) {
                     onRetry();
                   }
                 },
-                text: 'Retry',
+                buttonTitle: 'Retry',
+                btColor: AppColors.secondary,
               ),
               Gap.v(10),
             ],

@@ -9,28 +9,32 @@ class PrimaryBTN extends StatelessWidget {
   final double width;
   final String? icon;
   final Color btColor;
+  final double height;
+  final double fontSize;
   bool haveIcon;
   PrimaryBTN({
     super.key,
     this.onCLick,
     required this.buttonTitle,
     this.width = 292,
+    this.height = 56,
     this.haveIcon = false,
     this.icon,
+    this.fontSize = 18,
     this.btColor = AppColors.primary,
   });
 
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      height: 56.v,
+      height: height.v,
       minWidth: width.h,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       onPressed: onCLick,
       color: btColor,
       child: CustomText(
         title: buttonTitle,
-        size: 18,
+        size: fontSize.fSize,
         color: AppColors.white,
         fontWeight: FontWeight.w600,
       ),

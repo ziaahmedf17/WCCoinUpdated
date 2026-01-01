@@ -28,112 +28,196 @@ class QuizResultScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: const CustomAppBar(title: "Quiz View"),
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.bgColor,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
+        child: SingleChildScrollView(
           child: Column(
             children: [
               // Grid
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: List.generate(answers.length, (index) {
-                  bool isCorrect = answers[index];
-                  return Container(
-                    width: 80.h,
-                    height: 60,
+              Gap.v(20),
+
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.h),
+                child: Material(
+                  borderRadius: BorderRadius.circular(12),
+                  elevation: 5,
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.deepPurple, width: 2),
+                      color: AppColors.primary,
                     ),
-                    child: Stack(
-                      alignment: Alignment.center,
+                    child: Column(
                       children: [
-                        CustomText(
-                          title: '${index + 1}',
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.fontColor,
-                          size: 30.fSize,
-                        ),
-                        Positioned(
-                          top: 4,
-                          right: 4,
-                          child: CustomText(
-                            title: isCorrect ? '✅' : 'X',
-                            size: isCorrect ? 18.fSize : 22.fSize,
-                            color: isCorrect
-                                ? const Color(0xff44FF00)
-                                : Colors.red,
+                        CircleAvatar(
+                          radius: 35.fSize,
+                          backgroundColor: AppColors.white.withOpacity(.2),
+                          child: Center(
+                            child: Icon(
+                              Icons.leaderboard,
+                              color: AppColors.white,
+                            ),
                           ),
+                        ),
+                        Gap.v(13),
+                        const CustomText(
+                          title: 'Great Job!',
+                          color: AppColors.white,
+                          fontWeight: FontWeight.w600,
+                          size: 23,
+                        ),
+                        Gap.v(15),
+                        const CustomText(
+                          title: 'You have completed the quiz',
+                          fontWeight: FontWeight.w300,
+                          color: AppColors.white,
+                          size: 16,
                         ),
                       ],
                     ),
-                  );
-                }),
+                  ),
+                ),
+              ),
+
+              Gap.v(20),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.h),
+                child: Material(
+                  elevation: 5,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white, width: 1),
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.white,
+                    ),
+                    child: Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      children: List.generate(answers.length, (index) {
+                        bool isCorrect = answers[index];
+                        return Container(
+                          width: 80.h,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: isCorrect
+                                ? AppColors.green.withOpacity(.1)
+                                : AppColors.red.withOpacity(.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                                color:
+                                    isCorrect ? AppColors.green : AppColors.red,
+                                width: 2),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              CustomText(
+                                title: '${index + 1}',
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.fontColor,
+                                size: 30.fSize,
+                              ),
+                              Positioned(
+                                top: 4,
+                                right: 4,
+                                child: CustomText(
+                                  title: isCorrect ? '✅' : 'X',
+                                  size: isCorrect ? 18.fSize : 22.fSize,
+                                  color: isCorrect
+                                      ? const Color(0xff44FF00)
+                                      : Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ),
               ),
 
               const SizedBox(height: 30),
 
               // Score Summary Box
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 1),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.h),
+                child: Material(
+                  elevation: 5,
                   borderRadius: BorderRadius.circular(12),
-                  color: Colors.transparent,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    resultRow(
-                        label: 'Total Questions',
-                        value: totalQuestions.toString()),
-                    Divider(color: Colors.white.withOpacity(0.6)),
-                    resultRow(
-                        label: 'Correct Answers', value: correct.toString()),
-                    Divider(color: Colors.white.withOpacity(0.6)),
-                    resultRow(label: 'Wrong Answers', value: wrong.toString()),
-                    Divider(color: Colors.white.withOpacity(0.6)),
-                    resultRow(label: 'Win We Coins', value: '$winCoins '),
-                    Divider(color: Colors.white.withOpacity(0.6)),
-                    resultRow(label: 'TOTAL WC Coins', value: '$wcCoins '),
-                  ],
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white, width: 1),
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.white,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const CustomText(
+                          title: 'Quiz Summary',
+                          fontWeight: FontWeight.w600,
+                          size: 20,
+                        ),
+                        Gap.v(10),
+                        resultRow(
+                            label: 'Total Questions',
+                            value: totalQuestions.toString()),
+                        Gap.v(10),
+
+                        // Divider(color: Colors.white.withOpacity(0.6)),
+                        resultRow(
+                            label: 'Correct Answers',
+                            value: correct.toString()),
+                        Gap.v(10),
+
+                        // Divider(color: Colors.white.withOpacity(0.6)),
+                        resultRow(
+                            label: 'Wrong Answers', value: wrong.toString()),
+                        Gap.v(10),
+
+                        // Divider(color: Colors.white.withOpacity(0.6)),
+                        resultRow(label: 'Win We Coins', value: '$winCoins '),
+                        Gap.v(10),
+
+                        // Divider(color: Colors.white.withOpacity(0.6)),
+                        resultRow(label: 'TOTAL WC Coins', value: '$wcCoins '),
+                      ],
+                    ),
+                  ),
                 ),
               ),
 
               Gap.v(30),
-
-              PrimaryBTN(
-                onCLick: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const RootView();
-                      },
-                    ),
-                    (route) => false,
-                  );
-                },
-                buttonTitle: 'Go to Home',
-                btColor: AppColors.yellow,
-              )
-
-              // GestureDetector(
-              //     onTap: () {
-              //       Navigator.push(
-              //         context,
-              //         MaterialPageRoute(
-              //           builder: (context) => CongratulationsView(),
-              //         ),
-              //       );
-              //     },
-              //     child: Image.asset("assets/images/button.png"))
             ],
           ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.all(20.h),
+        decoration: const BoxDecoration(
+          color: AppColors.white,
+        ),
+        child: PrimaryBTN(
+          onCLick: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return const RootView();
+                },
+              ),
+              (route) => false,
+            );
+          },
+          buttonTitle: 'Continue',
+          btColor: AppColors.secondary,
         ),
       ),
     );
@@ -147,16 +231,16 @@ class QuizResultScreen extends StatelessWidget {
         children: [
           CustomText(
             title: label,
-            color: Colors.white,
+            color: AppColors.fontColor,
             size: 14.fSize,
           ),
           Row(
             children: [
-              Image.asset("assets/images/WC COIN.png", scale: 100),
+              Image.asset("assets/icons/coin.png", scale: 5.v),
               Gap.h(10),
               CustomText(
                 title: value,
-                color: Colors.white,
+                color: AppColors.fontColor,
                 fontWeight: FontWeight.w600,
                 size: 14.fSize,
               ),

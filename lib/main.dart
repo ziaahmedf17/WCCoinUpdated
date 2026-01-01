@@ -16,20 +16,6 @@ import 'package:wc_coin_app/screens/splash/splash.dart';
 import 'package:wc_coin_app/services/network_listener.dart';
 
 Map<String, dynamic> apads = {};
-// const String _interAdId = "b46f850c96541611";
-
-// Future<bool> isReady() async {
-//   bool isReady = (await AppLovinMAX.isInterstitialReady(AppAdIds.interAdId))!;
-//   if (isReady) {
-//     print('method is true');
-//     return true;
-//   } else {
-//     print('method is false');
-//     // adVM.loadInterAd();
-//     AppLovinMAX.loadInterstitial(AppAdIds.interAdId);
-//     return false;
-//   }
-// }
 
 Future<bool> checkInternetConnection() async {
   var connectivityResult = await (Connectivity().checkConnectivity());
@@ -66,6 +52,12 @@ Future<void> main() async {
 
   if (await checkInternetConnection() == true) {
     apads = await getAdValues();
+
+    await _initializeCrashlytics();
+    final adsProvider = GoogleAdmobProvider();
+    await adsProvider.initializeAds();
+
+    print(AppAdIds);
   } else {
     apads = {
       'banner': false,
@@ -77,11 +69,6 @@ Future<void> main() async {
 
   // AdHelper.init();
 
-  await _initializeCrashlytics();
-  final adsProvider = GoogleAdmobProvider();
-  await adsProvider.initializeAds();
-
-  print(AppAdIds);
   runApp(
     MultiProvider(
       providers: [

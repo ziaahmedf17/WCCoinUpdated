@@ -22,8 +22,14 @@ class AuthResult {
   final bool success;
   final AuthError? error;
   final String? message;
+  final String? registeredEmail; // Add this field
 
-  AuthResult({required this.success, this.error, this.message});
+  AuthResult({
+    required this.success,
+    this.error,
+    this.message,
+    this.registeredEmail, // Add this parameter
+  });
 }
 
 class AuthService {
@@ -350,13 +356,16 @@ class AuthService {
         // Handle conflict (device restriction)
         final errorData = jsonDecode(response.body);
         final errorType = errorData['error'] ?? '';
+        final registeredEmail =
+            errorData['registered_email'] ?? errorData['email'];
 
         if (errorType == 'device_reuse_not_allowed') {
           return AuthResult(
             success: false,
             error: AuthError.deviceRestricted,
-            message:
-                'This device is already registered with another email. Only one email can register per device.',
+            message: errorData['message'] ??
+                'This device is already registered with another email: $registeredEmail',
+            registeredEmail: registeredEmail,
           );
         }
 
@@ -364,6 +373,7 @@ class AuthService {
           success: false,
           error: AuthError.serverError,
           message: errorData['message'] ?? 'Registration conflict occurred',
+          registeredEmail: registeredEmail,
         );
       } else if (response.statusCode >= 500) {
         // ✅ Sign out on server error so user can try again
@@ -380,13 +390,16 @@ class AuthService {
 
         final errorData = jsonDecode(response.body);
         final errorType = errorData['error'] ?? '';
+        final registeredEmail =
+            errorData['registered_email'] ?? errorData['email'];
 
         if (errorType == 'device_reuse_not_allowed') {
           return AuthResult(
             success: false,
             error: AuthError.deviceRestricted,
-            message:
-                'This device is already registered with another email. Only one email can register per device.',
+            message: errorData['message'] ??
+                'This device is already registered with another email: $registeredEmail',
+            registeredEmail: registeredEmail,
           );
         }
 
@@ -394,6 +407,7 @@ class AuthService {
           success: false,
           error: AuthError.serverError,
           message: errorData['message'] ?? 'Authentication failed',
+          registeredEmail: registeredEmail,
         );
       }
     } on SocketException {

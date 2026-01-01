@@ -144,7 +144,7 @@ class _MyProfileViewState extends State<MyProfileView> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          backgroundColor: AppColors.primary,
+          backgroundColor: AppColors.bgColor,
           title: const Row(
             children: [
               Icon(Icons.warning_amber_rounded, color: Colors.red, size: 28),
@@ -195,7 +195,10 @@ class _MyProfileViewState extends State<MyProfileView> {
                           strokeWidth: 2,
                         ),
                       )
-                    : CustomText(title: 'Delete')),
+                    : CustomText(
+                        title: 'Delete',
+                        color: AppColors.white,
+                      )),
           ],
         );
       },
@@ -265,7 +268,7 @@ class _MyProfileViewState extends State<MyProfileView> {
             title: CustomText(
               title: title,
               color: isDeleteAccount ? Colors.red : Colors.black,
-              size: 25,
+              size: 23,
               fontWeight: FontWeight.w600,
             ),
             trailing: Icon(
@@ -305,7 +308,7 @@ class _MyProfileViewState extends State<MyProfileView> {
       body: SafeArea(
         child: _isLoading
             ? const Center(
-                child: CircularProgressIndicator(color: Colors.white))
+                child: CircularProgressIndicator(color: AppColors.primary))
             : _error != null
                 ? Center(
                     child: Column(

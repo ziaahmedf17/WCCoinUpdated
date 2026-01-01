@@ -7,6 +7,7 @@ import 'package:wc_coin_app/main.dart';
 import 'package:wc_coin_app/services/promo_code_service.dart';
 import 'package:wc_coin_app/shared/custom_appbar.dart';
 import 'package:wc_coin_app/shared/custom_button.dart';
+import 'package:wc_coin_app/shared/primary_btn.dart';
 import 'package:wc_coin_app/shared/text_view.dart';
 
 class EnterPromoCodeView extends StatefulWidget {
@@ -146,8 +147,6 @@ class _EnterPromoCodeViewState extends State<EnterPromoCodeView> {
     );
   }
 
-
-
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -179,119 +178,124 @@ class _EnterPromoCodeViewState extends State<EnterPromoCodeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: "Enter Promo Code"),
-      backgroundColor: AppColors.primary,
-      body: Container(
-        margin: const EdgeInsets.all(20),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(25),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              offset: Offset(0, 4),
-              blurRadius: 10,
+      backgroundColor: AppColors.bgColor,
+      body: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  offset: Offset(0, 4),
+                  spreadRadius: 3,
+                  blurRadius: 20,
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const CustomText(
-              title: "Enter Promo Code",
-              size: 35,
-              fontWeight: FontWeight.w400,
-              color: Colors.black,
-            ),
-            Gap.v(20),
-            TextField(
-              controller: _promoCodeController,
-              enabled: !isLoading,
-              style: const TextStyle(
-                fontFamily: 'Boogaloo',
-                color: Color(0xff6D1AE7),
-                fontWeight: FontWeight.bold,
-              ),
-              decoration: InputDecoration(
-                hintText: "Promo Code",
-                hintStyle: const TextStyle(
-                  fontFamily: 'Boogaloo',
-                  color: Color(0xff6D1AE7),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/promo_png.png',
+                  scale: 4.v,
+                ),
+                const CustomText(
+                  title: "Enter Promo Code",
+                  size: 20,
                   fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
-                filled: true,
-                fillColor:
-                    isLoading ? Colors.purple.shade50 : Colors.purple.shade100,
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Color(0xff6D1AE7)),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.deepPurple),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey.shade400),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-              ),
-              textCapitalization: TextCapitalization.characters,
-              onSubmitted: isLoading ? null : (_) => _redeemPromoCode(),
-            ),
-            Gap.v(20),
-            GestureDetector(
-              // onTap: isLoading ? null : _redeemPromoCode,
-
-              onTap: () async {
-                if (isLoading) return;
-
-                apads['int']
-                    ? InterstitialAdLoading.show(
-                        context,
-                        onComplete: _redeemPromoCode,
-                        onFailed: _redeemPromoCode,
-                      )
-                    : _redeemPromoCode();
-              },
-              child: Container(
-                height: 50,
-                width: 260.h,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: isLoading
-                        ? [Colors.grey.shade400, Colors.grey.shade500]
-                        : [Colors.orange, Colors.amber],
+                Gap.v(20),
+                TextField(
+                  controller: _promoCodeController,
+                  enabled: !isLoading,
+                  style: const TextStyle(
+                    fontFamily: 'Boogaloo',
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
                   ),
-                  borderRadius: BorderRadius.circular(25),
-                  boxShadow: [
-                    BoxShadow(
-                      color: isLoading ? Colors.black12 : Colors.black26,
-                      offset: const Offset(0, 4),
-                      blurRadius: 8,
+                  decoration: InputDecoration(
+                    hintText: "Promo Code",
+                    hintStyle: TextStyle(
+                      fontFamily: 'Boogaloo',
+                      color: AppColors.primary.withOpacity(.6),
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
+                    filled: true,
+                    fillColor: isLoading
+                        ? AppColors.primary.withOpacity(.05)
+                        : AppColors.primary.withOpacity(.1),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.primary.withOpacity(.6),
+                      ),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.primary.withOpacity(.6),
+                      ),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    disabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey.shade400),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  textCapitalization: TextCapitalization.characters,
+                  onSubmitted: isLoading ? null : (_) => _redeemPromoCode(),
                 ),
-                child: Center(
-                  child: isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
-                      : const CustomText(
-                          title: 'Continue',
-                          size: 20,
-                          color: Colors.white,
-                        ),
+                Gap.v(20),
+                PrimaryBTN(
+                  onCLick: () async {
+                    if (isLoading) return;
+
+                    apads['int']
+                        ? InterstitialAdLoading.show(
+                            context,
+                            onComplete: _redeemPromoCode,
+                            onFailed: _redeemPromoCode,
+                          )
+                        : _redeemPromoCode();
+                  },
+                  btColor: AppColors.secondary,
+                  buttonTitle: 'Continue',
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Container(
+            margin: const EdgeInsets.all(20),
+            padding: EdgeInsets.symmetric(vertical: 10.v, horizontal: 12.h),
+            width: SizeUtils.width,
+            // height: 150.v,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.primary.withOpacity(.3)),
+                gradient: const LinearGradient(
+                    colors: [Color(0xffEFF6FF), Color(0xffFFF7ED)])),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Gap.v(10),
+                CustomText(title: '💡 Pro Tip:'),
+                Gap.v(10),
+                Padding(
+                  padding: EdgeInsets.only(left: 20.h),
+                  child: CustomText(
+                    title:
+                        'Check your email for exclusive promo codes or follow us on social media for special offers!',
+                  ),
+                ),
+                Gap.v(10),
+              ],
+            ),
+          )
+        ],
       ),
       bottomNavigationBar: apads['banner']
           ? Container(
@@ -310,7 +314,7 @@ class _EnterPromoCodeViewState extends State<EnterPromoCodeView> {
                 ],
               ),
             )
-          : SizedBox(),
+          : const SizedBox(),
     );
   }
 }

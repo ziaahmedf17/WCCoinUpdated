@@ -289,13 +289,13 @@ class _VisitToEarnViewState extends State<VisitToEarnView>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
           ),
           SizedBox(height: 20),
           CustomText(
             title: 'Loading Links...',
             size: 16,
-            color: AppColors.white,
+            color: AppColors.primary,
           ),
         ],
       ),
@@ -334,7 +334,7 @@ class _VisitToEarnViewState extends State<VisitToEarnView>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: "Visit to Earn"),
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.bgColor,
       body: Column(
         children: [
           // Timer Display at the top
@@ -426,13 +426,14 @@ class _VisitToEarnViewState extends State<VisitToEarnView>
                             title: CustomText(
                               title: "Earn ${link.coins} Coins",
                               size: 18,
-                              color: Colors.white,
+                              color: AppColors.fontColor,
+                              fontWeight: FontWeight.w600,
                             ),
                             subtitle: CustomText(
                               title:
                                   "Status: ${link.status}\nAdded: $formattedDate",
                               size: 14,
-                              color: Colors.white70,
+                              color: AppColors.fontColor,
                             ),
                             trailing: GestureDetector(
                               onTap: () => _handleButtonTap(link),

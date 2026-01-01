@@ -102,8 +102,9 @@ class _RewardedAdDialogState extends State<_RewardedAdDialog> {
           Future.delayed(const Duration(seconds: 1), _showRewardAd);
         },
         onAdFailedToLoad: (error) {
-          print("❌ Rewarded ad failed to load: ${error.code} - ${error.message}");
-          
+          print(
+              "❌ Rewarded ad failed to load: ${error.code} - ${error.message}");
+
           if (_retryAttempt < _maxRetryCount) {
             _retryAttempt++;
             Future.delayed(
@@ -136,7 +137,7 @@ class _RewardedAdDialogState extends State<_RewardedAdDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: AppColors.bgColor,
+      backgroundColor: AppColors.primary,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
         padding: const EdgeInsets.all(24),
@@ -149,6 +150,7 @@ class _RewardedAdDialogState extends State<_RewardedAdDialog> {
               title: _showWaitingMessage
                   ? "Please Wait a While..."
                   : "Loading Rewarded Ad...",
+              color: AppColors.white,
               size: 16,
             ),
           ],

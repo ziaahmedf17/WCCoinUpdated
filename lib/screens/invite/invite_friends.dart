@@ -397,202 +397,257 @@ Download now and start earning! 💰
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
-      appBar: AppBar(
-        title: const CustomText(
-          title: 'Invite Friends',
-          size: 24,
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.bgColor,
+      appBar: CustomAppBar(
+        title: 'Invite Friends',
+        hasLeading: false,
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Align(
-              alignment: Alignment.center,
-              child: Image.asset(
-                "assets/images/invite_image.png",
-                scale: 5.v,
-              ),
-            ),
             Gap.v(20),
 
             // Section 1: My Referral Code
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
+            Padding(
+              padding: EdgeInsetsGeometry.symmetric(horizontal: 20.h),
+              child: Material(
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    size: 26.fSize,
-                    title: "My Referral Code",
-                    color: const Color(0xff4400CE),
-                    fontWeight: FontWeight.bold,
+                elevation: 5,
+                child: Container(
+                  // margin: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
                   ),
-                  Gap.v(15),
-                  _isLoadingReferralInfo
-                      ? const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(20.0),
-                            child: CircularProgressIndicator(
-                              color: Color(0xff6D1AE7),
-                            ),
-                          ),
-                        )
-                      : Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(15),
-                              decoration: BoxDecoration(
-                                color: const Color(0xff6D1AE7).withOpacity(0.1),
-                                border: Border.all(
-                                    color: const Color(0xff6D1AE7), width: 2),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: CustomText(
-                                      size: 22.fSize,
-                                      title: _myReferralCode,
-                                      color: const Color(0xff6D1AE7),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        onPressed: _copyReferralCode,
-                                        icon: const Icon(Icons.copy,
-                                            color: Color(0xff6D1AE7)),
-                                        tooltip: "Copy",
-                                      ),
-                                      IconButton(
-                                        onPressed: _shareReferralCode,
-                                        icon: const Icon(Icons.share,
-                                            color: Color(0xff6D1AE7)),
-                                        tooltip: "Share",
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Gap.v(15),
-                            CustomText(
-                              alignment: TextAlign.center,
-                              size: 18.fSize,
-                              title:
-                                  "Share this code with friends and earn $_selfBonus coins for each referral!",
-                              color: const Color(0xff27AE60),
-                            ),
-                          ],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Image.asset(
+                          "assets/images/invite_image.png",
+                          scale: 4.v,
                         ),
-                ],
+                      ),
+                      Gap.v(20),
+                      CustomText(
+                        size: 26.fSize,
+                        title: "Invite friends and get bonus coins!",
+                        color: AppColors.fontColor,
+                        fontWeight: FontWeight.bold,
+                        alignment: TextAlign.center,
+                      ),
+                      Gap.v(15),
+                      CustomText(
+                        size: 17,
+                        title: "Earn rewards for every new member you refer",
+                        color: AppColors.fontColor.withOpacity(.7),
+                        fontWeight: FontWeight.w300,
+                        alignment: TextAlign.center,
+                      ),
+                      Gap.v(15),
+                      _isLoadingReferralInfo
+                          ? const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(20.0),
+                                child: CircularProgressIndicator(
+                                    color: AppColors.primary),
+                              ),
+                            )
+                          : Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        padding: const EdgeInsets.all(15),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.primary
+                                              .withOpacity(.03),
+                                          border: Border.all(
+                                              color: AppColors.primary
+                                                  .withOpacity(.3),
+                                              width: 2),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: CustomText(
+                                          size: 22.fSize,
+                                          title: _myReferralCode,
+                                          color: AppColors.primary,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    Gap.h(10),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: _copyReferralCode,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: AppColors.primary),
+                                            child: const Center(
+                                              child: Icon(Icons.copy,
+                                                  color: AppColors.white),
+                                            ),
+                                          ),
+                                        ),
+                                        Gap.h(10),
+
+                                        GestureDetector(
+                                          onTap: _shareReferralCode,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: AppColors.primary),
+                                            child: const Center(
+                                              child: Icon(Icons.share,
+                                                  color: AppColors.white),
+                                            ),
+                                          ),
+                                        ),
+                                        // IconButton(
+                                        //   onPressed: _shareReferralCode,
+                                        //   icon: const Icon(Icons.share,
+                                        //       color: Color(0xff6D1AE7)),
+                                        //   tooltip: "Share",
+                                        // ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Gap.v(15),
+                                // CustomText(
+                                //   alignment: TextAlign.center,
+                                //   size: 18.fSize,
+                                //   title:
+                                //       "Share this code with friends and earn $_selfBonus coins for each referral!",
+                                //   color: const Color(0xff27AE60),
+                                // ),
+                              ],
+                            ),
+                    ],
+                  ),
+                ),
               ),
             ),
 
             Gap.v(20),
 
             // Section 2: Redeem Referral Code
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
+            Padding(
+              padding: EdgeInsetsGeometry.symmetric(horizontal: 20.h),
+              child: Material(
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    size: 26.fSize,
-                    title: "Have a Referral Code?",
-                    color: const Color(0xff4400CE),
-                    fontWeight: FontWeight.bold,
+                elevation: 5,
+                child: Container(
+                  // margin: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
                   ),
-                  Gap.v(10),
-                  CustomText(
-                    alignment: TextAlign.left,
-                    size: 18.fSize,
-                    title: "Enter a referral code to get bonus coins!",
-                    color: const Color(0xff27AE60),
-                  ),
-                  Gap.v(20),
-                  Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Container(
-                          height: 56.v,
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                            color: const Color(0xff6D1AE7).withOpacity(0.1),
-                            border: Border.all(color: const Color(0xff6D1AE7)),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: TextField(
-                            controller: _referralController,
-                            style: TextStyle(
-                              color: const Color(0xff6D1AE7),
-                              fontSize: 20.fSize,
-                              fontFamily: 'Boogaloo',
-                            ),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Enter Referral Code",
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 17.h, vertical: 0),
-                              hintStyle:
-                                  const TextStyle(color: Color(0xff6D1AE7)),
-                            ),
-                          ),
-                        ),
+                      CustomText(
+                        size: 26.fSize,
+                        title: "Have a Referral Code?",
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
                       ),
-                      Gap.h(20),
-                      GestureDetector(
-                        onTap: () async {
-                          if (_isLoading) return;
-
-                          apads['int']
-                              ? InterstitialAdLoading.show(
-                                  context,
-                                  onComplete: _redeemReferral,
-                                  onFailed: _redeemReferral,
-                                )
-                              : _redeemReferral();
-                        },
-                        child: Container(
-                          height: 56.v,
-                          width: 80.h,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: const Color(0xff6D1AE7).withOpacity(0.1),
-                            border: Border.all(color: const Color(0xff6D1AE7)),
-                            borderRadius: BorderRadius.circular(10),
+                      Gap.v(10),
+                      CustomText(
+                        alignment: TextAlign.left,
+                        size: 18.fSize,
+                        title: "Enter a referral code to get bonus coins!",
+                        color: const Color(0xff27AE60),
+                      ),
+                      Gap.v(20),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 56.v,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withOpacity(0.1),
+                                border: Border.all(
+                                  color: AppColors.primary,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: TextField(
+                                controller: _referralController,
+                                style: TextStyle(
+                                  color: AppColors.primary,
+                                  fontSize: 20.fSize,
+                                  fontFamily: 'Boogaloo',
+                                ),
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Enter Referral Code",
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 17.h, vertical: 0),
+                                  hintStyle: const TextStyle(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
                           ),
-                          child: _isLoading
-                              ? const SizedBox(
-                                  height: 24,
-                                  width: 24,
-                                  child: CircularProgressIndicator(
-                                      strokeWidth: 2, color: Color(0xff6D1AE7)),
-                                )
-                              : const Icon(Icons.check,
-                                  color: Color(0xff6D1AE7)),
-                        ),
+                          Gap.h(10),
+                          GestureDetector(
+                            onTap: () async {
+                              if (_isLoading) return;
+
+                              apads['int']
+                                  ? InterstitialAdLoading.show(
+                                      context,
+                                      onComplete: _redeemReferral,
+                                      onFailed: _redeemReferral,
+                                    )
+                                  : _redeemReferral();
+                            },
+                            child: Container(
+                              height: 56.v,
+                              // width: 80.h,
+                              padding: EdgeInsets.symmetric(horizontal: 14.h),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                border:
+                                    Border.all(color: const Color(0xff6D1AE7)),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: _isLoading
+                                  ? const SizedBox(
+                                      height: 24,
+                                      width: 24,
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: AppColors.white),
+                                    )
+                                  : const Icon(Icons.check,
+                                      color: AppColors.white),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
 

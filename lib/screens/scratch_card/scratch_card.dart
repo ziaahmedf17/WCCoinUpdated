@@ -435,6 +435,7 @@ class _ScratchCardViewState extends State<ScratchCardView>
                 const CustomText(
                   title: 'Watch Ad to double your Reward',
                   size: 15,
+                  color: AppColors.white,
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -455,6 +456,7 @@ class _ScratchCardViewState extends State<ScratchCardView>
                             child: CustomText(
                           title: 'Continue',
                           color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
                         )),
                       ),
                     ),
@@ -479,8 +481,9 @@ class _ScratchCardViewState extends State<ScratchCardView>
                         ),
                         child: const Center(
                             child: CustomText(
-                          title: '2x Your Reward',
+                          title: '2x Reward',
                           color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
                         )),
                       ),
                     ),
@@ -539,19 +542,12 @@ class _ScratchCardViewState extends State<ScratchCardView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.bgColor,
       appBar: const CustomAppBar(title: 'Scratch Card'),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CustomText(
-              title: 'Scratch the card to reveal your prize!',
-              size: 18,
-              color: Colors.white,
-            ),
-            Gap.v(20),
-
             // Timer or Ready indicator
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -661,7 +657,7 @@ class _ScratchCardViewState extends State<ScratchCardView>
             if (_loading)
               Column(
                 children: [
-                  const CircularProgressIndicator(color: Colors.white),
+                  const CircularProgressIndicator(color: AppColors.primary),
                   Gap.v(10),
                   const CustomText(
                     title: 'Processing your reward...',
@@ -676,42 +672,61 @@ class _ScratchCardViewState extends State<ScratchCardView>
                   const CustomText(
                     title: 'Come back later!',
                     size: 18,
-                    color: Colors.white,
+                    color: AppColors.primary,
                   ),
                   Gap.v(10),
                   if (_nextClaimTime != null)
                     CustomText(
                       title: 'Next claim: $_nextClaimTime',
                       size: 14,
-                      color: Colors.white70,
+                      color: AppColors.primary,
                     ),
                 ],
               )
             else if (_isScratched)
-              const CustomText(
-                title: 'Great! Your reward is being processed...',
-                size: 16,
-                color: Colors.white,
-              )
+              Container(
+                  margin: const EdgeInsets.all(20),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 10.v, horizontal: 12.h),
+                  width: SizeUtils.width,
+                  // height: 150.v,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border:
+                          Border.all(color: AppColors.primary.withOpacity(.3)),
+                      gradient: const LinearGradient(
+                          colors: [Color(0xffEFF6FF), Color(0xffFFF7ED)])),
+                  child: CustomText(
+                    title: 'Great! Your reward is being processed...',
+                    size: 14,
+                    color: AppColors.fontColor.withOpacity(.6),
+                    alignment: TextAlign.center,
+                  ))
             else
-              CustomText(
-                title: _canClaim
-                    ? 'Scratch with your finger to reveal the prize'
-                    : 'Please wait for the timer to finish',
-                size: 16,
-                color: _canClaim ? Colors.white70 : Colors.orange,
+              Container(
+                margin: const EdgeInsets.all(20),
+                padding: EdgeInsets.symmetric(vertical: 10.v, horizontal: 12.h),
+                width: SizeUtils.width,
+                // height: 150.v,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border:
+                        Border.all(color: AppColors.primary.withOpacity(.3)),
+                    gradient: const LinearGradient(
+                        colors: [Color(0xffEFF6FF), Color(0xffFFF7ED)])),
+                child: CustomText(
+                  title: _canClaim
+                      ? '💡 Tip: Scratch with your finger to reveal the prize'
+                      : 'Please wait for the timer to finish',
+                  size: 14,
+                  color: _canClaim
+                      ? AppColors.fontColor.withOpacity(.6)
+                      : Colors.orange,
+                  alignment: TextAlign.center,
+                ),
               ),
 
             Gap.v(30),
-
-            // Reset button
-            if (_isScratched && !_loading && _canClaim)
-              CustomBTN(
-                ontap: _resetScratchCard,
-                text: 'Try Another Card',
-                size: 3,
-                textSize: 18,
-              ),
           ],
         ),
       ),

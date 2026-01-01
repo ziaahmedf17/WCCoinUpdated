@@ -7,6 +7,7 @@ import 'package:wc_coin_app/main.dart';
 import 'package:wc_coin_app/models/redeem_uc_pckg_model.dart';
 import 'package:wc_coin_app/services/redeem_uc_service.dart';
 import 'package:wc_coin_app/shared/custom_appbar.dart';
+import 'package:wc_coin_app/shared/primary_btn.dart';
 import 'package:wc_coin_app/shared/text_view.dart';
 
 class RedeemUCView extends StatefulWidget {
@@ -224,6 +225,7 @@ class _RedeemUCViewState extends State<RedeemUCView> {
                   title: 'Enter Player ID',
                   size: 27,
                   color: AppColors.fontColor,
+                  fontWeight: FontWeight.w600,
                 ),
                 Gap.v(25),
                 TextFormField(
@@ -267,6 +269,7 @@ class _RedeemUCViewState extends State<RedeemUCView> {
                   title: 'Enter Email Address',
                   size: 27,
                   color: AppColors.fontColor,
+                  fontWeight: FontWeight.w600,
                 ),
                 Gap.v(25),
                 TextFormField(
@@ -310,65 +313,44 @@ class _RedeemUCViewState extends State<RedeemUCView> {
                   },
                 ),
                 Gap.v(40),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xffFF5A00),
-                        Color(0xffFF9500)
-                      ], // orange shades
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: MaterialButton(
-                    height: 60.v,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        // Navigator.of(context).pop({
-                        //   'playerId': playerIdController.text.trim(),
-                        //   'playerEmail': playerEmailController.text.trim(),
-                        // });
+                PrimaryBTN(
+                  onCLick: () {
+                    if (formKey.currentState!.validate()) {
+                      // Navigator.of(context).pop({
+                      //   'playerId': playerIdController.text.trim(),
+                      //   'playerEmail': playerEmailController.text.trim(),
+                      // });
 
-                        apads['int']
-                            ? InterstitialAdLoading.show(
-                                context,
-                                onComplete: () {
-                                  Navigator.of(context).pop({
-                                    'playerId': playerIdController.text.trim(),
-                                    'playerEmail':
-                                        playerEmailController.text.trim(),
-                                  });
-                                },
-                                onFailed: () {
-                                  Navigator.of(context).pop({
-                                    'playerId': playerIdController.text.trim(),
-                                    'playerEmail':
-                                        playerEmailController.text.trim(),
-                                  });
-                                },
-                              )
-                            : () {
+                      apads['int']
+                          ? InterstitialAdLoading.show(
+                              context,
+                              onComplete: () {
                                 Navigator.of(context).pop({
                                   'playerId': playerIdController.text.trim(),
                                   'playerEmail':
                                       playerEmailController.text.trim(),
                                 });
-                              };
-                      }
-                    },
-                    child: const CustomText(
-                      title: 'Continue',
-                      size: 20,
-                      color: AppColors.white,
-                    ),
-                  ),
-                )
+                              },
+                              onFailed: () {
+                                Navigator.of(context).pop({
+                                  'playerId': playerIdController.text.trim(),
+                                  'playerEmail':
+                                      playerEmailController.text.trim(),
+                                });
+                              },
+                            )
+                          : () {
+                              Navigator.of(context).pop({
+                                'playerId': playerIdController.text.trim(),
+                                'playerEmail':
+                                    playerEmailController.text.trim(),
+                              });
+                            };
+                    }
+                  },
+                  buttonTitle: 'Continue',
+                  btColor: AppColors.secondary,
+                ),
               ],
             ),
           ),
@@ -479,13 +461,13 @@ class _RedeemUCViewState extends State<RedeemUCView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
           ),
           Gap.v(20),
           const CustomText(
             title: 'Loading packages...',
             size: 16,
-            color: AppColors.white,
+            color: AppColors.primary,
           ),
         ],
       ),
@@ -497,77 +479,100 @@ class _RedeemUCViewState extends State<RedeemUCView> {
 
     return GestureDetector(
       onTap: isRedeeming ? null : () => _redeemPackage(package),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white.withOpacity(isRedeeming ? 0.05 : 0.1),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-              color: isRedeeming
-                  ? AppColors.white.withOpacity(0.5)
-                  : AppColors.white),
-        ),
-        child: Stack(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Gap.v(15),
-                Opacity(
-                  opacity: isRedeeming ? 0.5 : 1.0,
-                  child: Image.asset(
-                    'assets/images/uc_cash.png',
-                    scale: 5.v,
-                  ),
-                ),
-                Gap.v(15),
-                CustomText(
-                  title: '${package.ucValue} UC',
-                  size: 24,
-                  color: isRedeeming
-                      ? AppColors.white.withOpacity(0.5)
-                      : AppColors.white,
-                ),
-                Gap.v(10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Opacity(
+      child: Material(
+        elevation: 5,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.white.withOpacity(isRedeeming ? 0.05 : 1),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+                color: isRedeeming
+                    ? AppColors.white.withOpacity(0.5)
+                    : AppColors.white),
+          ),
+          child: Stack(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Gap.v(15),
+                  Container(
+                    height: 100.v,
+                    width: 100.h,
+                    decoration: BoxDecoration(
+                        color: Color(0xffFF6900),
+                        border: Border.all(color: Color(0xffFF8904), width: 5),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Opacity(
                       opacity: isRedeeming ? 0.5 : 1.0,
                       child: Image.asset(
-                        'assets/icons/coin.png',
-                        scale: 7.v,
+                        'assets/icons/WCC.png',
+                        scale: 5.v,
                       ),
                     ),
-                    Gap.h(5),
-                    CustomText(
-                      title: '${package.coins}',
-                      size: 16,
-                      color: isRedeeming
-                          ? const Color(0xffEF1A1A).withOpacity(0.5)
-                          : const Color(0xffEF1A1A),
-                    ),
-                  ],
-                ),
-                Gap.v(15),
-              ],
-            ),
-            if (isRedeeming)
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(AppColors.white),
-                      strokeWidth: 2.0,
-                    ),
+                  Gap.v(15),
+                  CustomText(
+                    title: '${package.ucValue} UC',
+                    size: 24,
+                    color: isRedeeming
+                        ? AppColors.fontColor.withOpacity(0.5)
+                        : AppColors.fontColor,
+                    fontWeight: FontWeight.bold,
                   ),
-                ),
+                  Gap.v(10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Opacity(
+                        opacity: isRedeeming ? 0.5 : 1.0,
+                        child: Image.asset(
+                          'assets/icons/coin.png',
+                          scale: 6.v,
+                        ),
+                      ),
+                      Gap.h(5),
+                      CustomText(
+                        title: '${package.coins}',
+                        size: 18,
+                        height: 0,
+                        fontWeight: FontWeight.bold,
+                        color: isRedeeming
+                            ? const Color(0xffEF1A1A).withOpacity(0.5)
+                            : const Color(0xffEF1A1A),
+                      ),
+                    ],
+                  ),
+                  // Gap.v(15),
+                  Gap.v(10),
+
+                  PrimaryBTN(
+                    width: 150,
+                    height: 40,
+                    buttonTitle: 'Redeem',
+                    onCLick: isRedeeming ? null : () => _redeemPackage(package),
+                  )
+                ],
               ),
-          ],
+              if (isRedeeming)
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(AppColors.white),
+                        strokeWidth: 2.0,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -581,7 +586,7 @@ class _RedeemUCViewState extends State<RedeemUCView> {
           Icon(
             Icons.shopping_bag_outlined,
             size: 64.v,
-            color: AppColors.white.withOpacity(0.7),
+            color: AppColors.fontColor.withOpacity(0.7),
           ),
           Gap.v(20),
           const CustomText(
@@ -603,7 +608,7 @@ class _RedeemUCViewState extends State<RedeemUCView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.bgColor,
       appBar: const CustomAppBar(
         title: 'Redeem UC',
       ),
@@ -633,6 +638,7 @@ class _RedeemUCViewState extends State<RedeemUCView> {
     }
 
     return GridView.builder(
+      padding: EdgeInsets.symmetric(vertical: 12.v),
       physics: const AlwaysScrollableScrollPhysics(
         parent: BouncingScrollPhysics(),
       ),
@@ -640,7 +646,7 @@ class _RedeemUCViewState extends State<RedeemUCView> {
         crossAxisCount: 2,
         mainAxisSpacing: 20.v,
         crossAxisSpacing: 20.h,
-        childAspectRatio: 0.85,
+        childAspectRatio: 0.6,
       ),
       itemCount: packages.length,
       itemBuilder: (BuildContext context, int index) {

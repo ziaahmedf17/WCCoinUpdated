@@ -128,7 +128,7 @@ class _InterstitialAdDialogState extends State<_InterstitialAdDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: AppColors.bgColor,
+      backgroundColor: AppColors.primary,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
         padding: const EdgeInsets.all(24),
@@ -141,6 +141,7 @@ class _InterstitialAdDialogState extends State<_InterstitialAdDialog> {
               title: _showWaitingMessage
                   ? "Please Wait a While..."
                   : "Loading Advertisement...",
+              color: AppColors.white,
               size: 16,
             ),
           ],

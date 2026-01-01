@@ -80,17 +80,20 @@ class _LoginViewState extends State<LoginView>
           }
         });
       } else {
-        String errorMessage = result.message ?? 'Sign-in failed';
-
         if (result.error == AuthError.userCancelled) {
           return;
-        } else if (result.message!
-            .contains('This device is already registered with email:')) {
-          _showDeviceRestrictionDialog();
+        } else if (result.error == AuthError.deviceRestricted) {
+          // Get the registered email from the result
+          String registeredEmail = result.registeredEmail ?? 'another email';
+          _showDeviceRestrictionDialog(registeredEmail);
           return;
         }
 
+        String errorMessage = result.message ?? 'Sign-in failed';
         showCustomSnackBar(errorMessage, context, isError: true);
+        String registeredEmail = result.registeredEmail ?? 'another email';
+
+        _showDeviceRestrictionDialog(registeredEmail);
       }
     } catch (e) {
       setState(() => _isLoading = false);
@@ -102,8 +105,7 @@ class _LoginViewState extends State<LoginView>
     }
   }
 
-  void _showDeviceRestrictionDialog() {
-    final result = _authService.signInWithGoogle();
+  void _showDeviceRestrictionDialog(String registeredEmail) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -167,13 +169,50 @@ class _LoginViewState extends State<LoginView>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'This device is already registered with another email address.',
-                      // result.message,
+                      'This device is already registered with:',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: AppColors.fontColor,
-                        fontSize: 16,
+                        fontSize: 13,
                         height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    // Display the registered email
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 16,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.email_outlined,
+                            color: Colors.grey.shade700,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              registeredEmail,
+                              style: TextStyle(
+                                color: Colors.grey.shade800,
+                                fontSize: 14.fSize,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -336,28 +375,65 @@ class _LoginViewState extends State<LoginView>
                   position: _slideAnimation,
                   child: Center(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Gap.v(80),
-                        // Welcome text with animated appearance
-                        const CustomText(
-                          title: 'Welcome Back!',
-                          size: 32,
-                        ),
-                        Gap.v(10),
-                        const CustomText(title: 'Sign in to continue'),
-                        Gap.v(80),
-                        // Logo with subtle animation
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Image.asset(
                             'assets/images/WC COIN.png',
-                            scale: 5.v,
+                            scale: 3.v,
                           ),
                         ),
-                        const Spacer(),
+
+                        CustomText(
+                          title: 'WC APP',
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.white,
+                          size: 30,
+                        ),
+
+                        // Gap.v(50),
+
+                        Container(
+                          width: 180.h,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10.v, horizontal: 20.h),
+                          decoration: BoxDecoration(
+                              color: AppColors.white.withOpacity(.2),
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/icons/coin.png',
+                                  scale: 4.v,
+                                ),
+                                Gap.h(12),
+                                CustomText(
+                                  title: 'Get Rewards',
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.w500,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        // Loading indicator
+                        // SizedBox(
+                        //   height: 4,
+                        //   width: 200,
+                        //   child: LinearProgressIndicator(
+                        //     backgroundColor: Colors.white.withOpacity(0.2),
+                        //     valueColor: AlwaysStoppedAnimation<Color>(
+                        //       Colors.white.withOpacity(0.8),
+                        //     ),
+                        //   ),
+                        // ),
+                        // const Spacer(),
+                        Gap.v(100),
                         // Enhanced Google Sign-in Button
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -394,19 +470,7 @@ class _LoginViewState extends State<LoginView>
                             ),
                           ),
                         ),
-                        Gap.v(40),
-                        // Privacy text
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40),
-                          child: Text(
-                            'By signing in, you agree to our Terms of Service and Privacy Policy',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.6),
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
+
                         Gap.v(30),
                       ],
                     ),
@@ -460,6 +524,7 @@ class _LoginViewState extends State<LoginView>
         const CustomText(
           title: 'Continue with Google',
           color: AppColors.fontColor,
+          fontWeight: FontWeight.w600,
           size: 20,
         )
       ],

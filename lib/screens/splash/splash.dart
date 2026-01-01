@@ -6,6 +6,7 @@ import 'package:wc_coin_app/screens/home/home.dart';
 import 'package:wc_coin_app/screens/root/root_view.dart';
 import 'package:wc_coin_app/screens/login/login.dart';
 import 'package:wc_coin_app/services/auth_service.dart';
+import 'package:wc_coin_app/services/network_listener.dart';
 import 'package:wc_coin_app/shared/text_view.dart';
 import 'package:wc_coin_app/shared/primary_btn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -59,7 +60,12 @@ class _SplashViewState extends State<SplashView>
     // Check internet connection first
     if (await checkInternetConnection() == false) {
       if (mounted) {
-        showNoInternetDialog(context);
+        ConnectivityHelper.showNoInternetDialog(
+          context,
+          onRetry: () {
+            _initializeApp();
+          },
+        );
       }
       return;
     }
@@ -129,56 +135,6 @@ class _SplashViewState extends State<SplashView>
     }
   }
 
-  Future<void> showNoInternetDialog(BuildContext context) async {
-    await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          elevation: 100,
-          backgroundColor: AppColors.primary,
-          content: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Gap.v(20),
-              Icon(
-                Icons.wifi_off_rounded,
-                size: 80.v,
-                color: Colors.red.shade400,
-              ),
-              Gap.v(20),
-              const CustomText(
-                title: 'No Internet',
-                fontWeight: FontWeight.bold,
-                size: 28,
-                color: Colors.white,
-              ),
-              Gap.v(15),
-              const CustomText(
-                title: 'Please check your network settings\nand try again',
-                alignment: TextAlign.center,
-                size: 16,
-                color: Colors.white70,
-              ),
-              Gap.v(25),
-              CustomBTN(
-                ontap: () {
-                  Navigator.of(context).pop();
-                  _initializeApp();
-                },
-                text: 'Retry',
-              ),
-              Gap.v(10),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   void _navigateToMain() {
     if (!mounted) return;
 
@@ -241,22 +197,55 @@ class _SplashViewState extends State<SplashView>
                       ),
                       child: Image.asset(
                         'assets/images/WC COIN.png',
-                        scale: 6.v,
+                        scale: 3.v,
                       ),
                     ),
 
-                    Gap.v(50),
-                    // Loading indicator
-                    SizedBox(
-                      height: 4,
-                      width: 200,
-                      child: LinearProgressIndicator(
-                        backgroundColor: Colors.white.withOpacity(0.2),
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Colors.white.withOpacity(0.8),
+                    CustomText(
+                      title: 'WC APP',
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.white,
+                      size: 30,
+                    ),
+
+                    // Gap.v(50),
+
+                    Container(
+                      width: 180.h,
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10.v, horizontal: 20.h),
+                      decoration: BoxDecoration(
+                          color: AppColors.white.withOpacity(.2),
+                          borderRadius: BorderRadius.circular(30)),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/icons/coin.png',
+                              scale: 4.v,
+                            ),
+                            Gap.h(12),
+                            CustomText(
+                              title: 'Get Rewards',
+                              color: AppColors.white,
+                              fontWeight: FontWeight.w500,
+                            )
+                          ],
                         ),
                       ),
-                    ),
+                    )
+                    // Loading indicator
+                    // SizedBox(
+                    //   height: 4,
+                    //   width: 200,
+                    //   child: LinearProgressIndicator(
+                    //     backgroundColor: Colors.white.withOpacity(0.2),
+                    //     valueColor: AlwaysStoppedAnimation<Color>(
+                    //       Colors.white.withOpacity(0.8),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

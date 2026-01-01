@@ -67,13 +67,13 @@ class _WithDrawlHistoryViewState extends State<WithDrawlHistoryView> {
                     children: [
                       const CircularProgressIndicator(
                         valueColor:
-                            AlwaysStoppedAnimation<Color>(AppColors.white),
+                            AlwaysStoppedAnimation<Color>(AppColors.primary),
                       ),
                       Gap.v(20),
                       const CustomText(
                         title: 'Loading transaction details...',
                         size: 16,
-                        color: AppColors.white,
+                        color: AppColors.primary,
                         alignment: TextAlign.center,
                       ),
                     ],
@@ -96,7 +96,7 @@ class _WithDrawlHistoryViewState extends State<WithDrawlHistoryView> {
                       const CustomText(
                         title: 'Error loading transaction',
                         size: 18,
-                        color: AppColors.white,
+                        color: AppColors.primary,
                         alignment: TextAlign.center,
                       ),
                       Gap.v(8),
@@ -105,7 +105,7 @@ class _WithDrawlHistoryViewState extends State<WithDrawlHistoryView> {
                             .toString()
                             .replaceAll('Exception: ', ''),
                         size: 14,
-                        color: AppColors.white.withOpacity(0.8),
+                        color: AppColors.primary.withOpacity(0.8),
                         alignment: TextAlign.center,
                         maxLines: 3,
                         // overflow: TextOverflow.ellipsis,
@@ -119,7 +119,7 @@ class _WithDrawlHistoryViewState extends State<WithDrawlHistoryView> {
                             child: const CustomText(
                               title: 'Close',
                               size: 16,
-                              color: AppColors.white,
+                              color: AppColors.fontColor,
                             ),
                           ),
                           ElevatedButton(
@@ -128,8 +128,8 @@ class _WithDrawlHistoryViewState extends State<WithDrawlHistoryView> {
                               _showTransactionDialog(transactionId);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.white,
-                              foregroundColor: AppColors.primary,
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: AppColors.white,
                             ),
                             child: const CustomText(
                               title: 'Retry',
@@ -153,13 +153,13 @@ class _WithDrawlHistoryViewState extends State<WithDrawlHistoryView> {
                       Icon(
                         Icons.info_outline,
                         size: 48.v,
-                        color: AppColors.white.withOpacity(0.7),
+                        color: AppColors.fontColor.withOpacity(0.7),
                       ),
                       Gap.v(16),
                       const CustomText(
                         title: 'Transaction not found',
                         size: 18,
-                        color: AppColors.white,
+                        color: AppColors.fontColor,
                         alignment: TextAlign.center,
                       ),
                       Gap.v(20),
@@ -168,7 +168,7 @@ class _WithDrawlHistoryViewState extends State<WithDrawlHistoryView> {
                         child: const CustomText(
                           title: 'Close',
                           size: 16,
-                          color: AppColors.white,
+                          color: AppColors.fontColor,
                         ),
                       ),
                     ],
@@ -445,13 +445,13 @@ class _WithDrawlHistoryViewState extends State<WithDrawlHistoryView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
           ),
           Gap.v(20),
           const CustomText(
             title: 'Loading transactions...',
             size: 16,
-            color: AppColors.white,
+            color: AppColors.primary,
           ),
         ],
       ),
@@ -514,19 +514,19 @@ class _WithDrawlHistoryViewState extends State<WithDrawlHistoryView> {
           Icon(
             Icons.history,
             size: 64.v,
-            color: AppColors.white.withOpacity(0.7),
+            color: AppColors.fontColor.withOpacity(0.7),
           ),
           Gap.v(20),
           const CustomText(
             title: 'No withdrawal history yet',
             size: 18,
-            color: AppColors.white,
+            color: AppColors.fontColor,
           ),
           Gap.v(10),
           CustomText(
             title: 'Your withdrawal transactions will appear here',
             size: 14,
-            color: AppColors.white.withOpacity(0.8),
+            color: AppColors.fontColor.withOpacity(0.8),
             alignment: TextAlign.center,
           ),
         ],

@@ -11,3 +11,14 @@ class AppColors {
   static const red = Color(0xffDA1E28);
   static const yellow = Color(0xffFFC600);
 }
+
+const gradients = [
+  Color(0xffFCE7F3),
+  Color(0xffFFE2E2),
+  Color(0xffDBEAFE),
+  Color(0xffFEF3C6),
+  Color(0xffCEFAFE),
+  Color(0xffE0E7FF),
+  Color(0xffD0FAE5),
+  Color(0xffEDE9FE),
+];

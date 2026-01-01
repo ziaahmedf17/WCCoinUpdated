@@ -311,9 +311,10 @@ class _BonusSectionState extends State<BonusSection>
 
     if (isCollected) {
       // Days collected - show green with checkmark
-      bgColor = AppColors.green;
+      bgColor = Color(0xff8200DB);
       icon = Icon(Icons.done_rounded, color: AppColors.white, size: 11.v);
-      textColor = AppColors.green;
+      // textColor = Color(0xff8200DB);
+      textColor = AppColors.white;
     } else {
       // Future days not collected yet - show gray
       bgColor = AppColors.white.withOpacity(0.3);
@@ -321,25 +322,24 @@ class _BonusSectionState extends State<BonusSection>
         radius: 4.v,
         backgroundColor: AppColors.fontColor.withOpacity(.3),
       );
-      textColor = Colors.white54;
+      textColor = Color(0xff8200DB);
+      bgColor = Color(0xff8200DB).withOpacity(.1);
     }
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Gap.v(18),
-        CircleAvatar(
-          radius: 13.v,
-          backgroundColor: bgColor,
-          child: Center(child: icon),
-        ),
-        Gap.v(4),
-        CustomText(
-          title: 'Day $day',
-          size: 10,
+    return Container(
+      height: 40.v,
+      width: 40.h,
+      margin: EdgeInsets.only(right: 10.v),
+      decoration:
+          BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(8)),
+      child: Center(
+        child: CustomText(
+          title: 'D$day',
+          size: 14,
+          fontWeight: FontWeight.w500,
           color: textColor,
         ),
-      ],
+      ),
     );
   }
 
@@ -360,71 +360,61 @@ class _BonusSectionState extends State<BonusSection>
         "Building widget with _currentDay: $_currentDay, _canClaim: $_canClaim");
 
     return Container(
-      height: 200.v,
+      // height: 190.v,
       width: SizeUtils.width,
       padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 10.v),
       decoration: BoxDecoration(
-        color: AppColors.white.withOpacity(.2),
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.white),
+        border: Border.all(color: AppColors.fontColor.withOpacity(.3)),
       ),
       child: Column(
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const CustomText(
-                    title: 'Daily Bonus',
-                    size: 22,
-                  ),
-                  const CustomText(
-                    title: 'Earn +250 every day',
-                    size: 15,
-                    color: AppColors.green,
-                  ),
-                  CustomText(
-                    title: _formatTime(),
-                    size: 12,
-                    color: _canClaim ? AppColors.green : Colors.white70,
-                  ),
-                ],
-              ),
-              const Spacer(),
-              Image.asset('assets/images/gift.png', scale: 14.v),
-              _isClaiming
-                  ? const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        height: 25,
-                        width: 25,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      ),
-                    )
-                  : ScaleTransition(
-                      scale: _canClaim
-                          ? _scaleAnimation
-                          : AlwaysStoppedAnimation(1.0),
-                      child: InkWell(
-                        onTap: _handleClaimBonus,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Opacity(
-                          opacity: _canClaim ? 1.0 : 0.5,
-                          child: CustomBTN(
-                              ontap: _handleClaimBonus,
-                              size: 10,
-                              text: 'Claim Bonus'),
-                        ),
+          ListTile(
+            contentPadding: EdgeInsets.all(0),
+            leading: Image.asset(
+              'assets/images/d.png',
+              scale: 3.v,
+            ),
+            title: const CustomText(
+              title: 'Daily Bonus',
+              size: 22,
+              height: 0,
+              fontWeight: FontWeight.w600,
+            ),
+            subtitle: CustomText(
+              title: _formatTime(),
+              size: 12,
+              color: AppColors.fontColor,
+              height: 0,
+            ),
+            trailing: _isClaiming
+                ? const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: 25,
+                      width: 25,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
                       ),
                     ),
-            ],
+                  )
+                : ScaleTransition(
+                    scale: _canClaim
+                        ? _scaleAnimation
+                        : AlwaysStoppedAnimation(1.0),
+                    child: PrimaryBTN(
+                      buttonTitle: 'Claim',
+                      onCLick: _handleClaimBonus,
+                      height: 40,
+                      width: 100,
+                      btColor: Color(0xff8200DB),
+                    ),
+                  ),
           ),
-          const Spacer(),
+
+          // const Spacer(),
           Container(
             width: double.infinity,
             height: 100.v,
@@ -436,45 +426,9 @@ class _BonusSectionState extends State<BonusSection>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildDayIndicator(1),
-                _buildDivider(1),
                 _buildDayIndicator(2),
-                _buildDivider(2),
                 _buildDayIndicator(3),
-                _buildDivider(3),
-                // Day 4 with special reward indicator
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Gap.v(18),
-                    if (_currentDay >= 4) ...[
-                      CircleAvatar(
-                        radius: 13.v,
-                        backgroundColor: AppColors.green,
-                        child: Icon(
-                          Icons.card_giftcard,
-                          color: Colors.amber,
-                          size: 16.v,
-                        ),
-                      ),
-                    ] else ...[
-                      CircleAvatar(
-                        radius: 13.v,
-                        backgroundColor: AppColors.white.withOpacity(0.3),
-                        child: Image.asset(
-                          'assets/images/gift.png',
-                          scale: 16.v,
-                        ),
-                      ),
-                    ],
-                    Gap.v(4),
-                    CustomText(
-                      title: 'Day 4',
-                      size: 10,
-                      color:
-                          _currentDay >= 4 ? AppColors.green : Colors.white54,
-                    ),
-                  ],
-                ),
+                _buildDayIndicator(4),
               ],
             ),
           ),
