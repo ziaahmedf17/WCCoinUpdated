@@ -202,7 +202,7 @@ class _SplashViewState extends State<SplashView>
                     ),
 
                     CustomText(
-                      title: 'WC APP',
+                      title: 'WVC APP',
                       fontWeight: FontWeight.bold,
                       color: AppColors.white,
                       size: 30,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wc_coin_app/core/constants/ad_helper/ad_helper.dart';
 import 'package:wc_coin_app/core/constants/ad_helper/app_open_ad_helper.dart';
 import 'package:wc_coin_app/core/constants/colors.dart';
@@ -282,16 +283,33 @@ class _EnterPromoCodeViewState extends State<EnterPromoCodeView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Gap.v(10),
-                CustomText(title: '💡 Pro Tip:'),
+                const CustomText(title: '💡 Pro Tip:'),
                 Gap.v(10),
                 Padding(
                   padding: EdgeInsets.only(left: 20.h),
-                  child: CustomText(
+                  child: const CustomText(
                     title:
-                        'Check your email for exclusive promo codes or follow us on social media for special offers!',
+                        'Join this telegram channel to get exclusive promo codes',
                   ),
                 ),
-                Gap.v(10),
+                Gap.v(20),
+                Center(
+                  child: PrimaryBTN(
+                    height: 50,
+                    width: 150,
+                    buttonTitle: 'Join Now',
+                    onCLick: () async {
+                      final Uri url = Uri.parse('https://t.me/WcCoinsApp');
+
+                      if (!await launchUrl(
+                        url,
+                        mode: LaunchMode.externalApplication,
+                      )) {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                  ),
+                )
               ],
             ),
           )

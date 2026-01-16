@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBprI5kfpwQBglRg6rUEJbF92TzGC-7a1c',
-    appId: '1:521594282339:android:f01f8478377ae73ced7356',
+    appId: '1:521594282339:android:6debae296dfb16ebed7356',
     messagingSenderId: '521594282339',
     projectId: 'wc-coin',
     storageBucket: 'wc-coin.firebasestorage.app',

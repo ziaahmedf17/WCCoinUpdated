@@ -186,12 +186,15 @@ class _RecentActivitiesState extends State<RecentActivities> {
                 final formattedDate = DateFormat("dd MMM yyyy, hh:mm a")
                     .format(activity.createdAt);
 
-                return ActivityTile(
-                  // image: _getActivityIcon(activity.logName),
-                  image: "assets/images/recent_activity1.png",
-                  tile: activity.description,
-                  subtitle: formattedDate,
-                  traling: _formatTrailingText(activity),
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.h),
+                  child: ActivityTile(
+                    // image: _getActivityIcon(activity.logName),
+                    image: "assets/icons/WCC.png",
+                    tile: activity.description,
+                    subtitle: formattedDate,
+                    traling: _formatTrailingText(activity),
+                  ),
                 );
               },
             );
@@ -225,7 +228,7 @@ class _RecentActivitiesState extends State<RecentActivities> {
         child: ListTile(
           leading: CircleAvatar(
             backgroundColor: AppColors.secondary,
-            // child: Image.asset(image, height: 36, width: 36),
+            child: Image.asset(image, height: 36, width: 36),
           ),
           title: CustomText(
             title: tile,

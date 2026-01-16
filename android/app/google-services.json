@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "521594282339",
+    "firebase_url": "https://wc-coin-default-rtdb.firebaseio.com",
     "project_id": "wc-coin",
     "storage_bucket": "wc-coin.firebasestorage.app"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "521594282339-843pnil54fdvaa8pfktrg4mgnp9i6629.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.wc_coin_app",
+            "certificate_hash": "dbd536b5b55d152f554809433b8a5fdfac56fc46"
+          }
+        },
         {
           "client_id": "521594282339-evnn21gjlh9c28pm8rjah2vf9inbe7rf.apps.googleusercontent.com",
           "client_type": 1,
@@ -47,6 +56,43 @@
         "mobilesdk_app_id": "1:521594282339:android:e150229975df0f0fed7356",
         "android_client_info": {
           "package_name": "com.get_unlimited_uc.earnuc_winuc_getuc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "521594282339-lql3gaqkc42bqdjfsthn7k96l4526n12.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.get_unlimited_uc.earnuc_winuc_getuc",
+            "certificate_hash": "246287e57afa2c89423a611b2fe5c2d407d07a9b"
+          }
+        },
+        {
+          "client_id": "521594282339-3uoh30tivgrt0vrpju617jmik4rv8dod.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBprI5kfpwQBglRg6rUEJbF92TzGC-7a1c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "521594282339-3uoh30tivgrt0vrpju617jmik4rv8dod.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:521594282339:android:6debae296dfb16ebed7356",
+        "android_client_info": {
+          "package_name": "com.getuc.earn_ucwinuc"
         }
       },
       "oauth_client": [

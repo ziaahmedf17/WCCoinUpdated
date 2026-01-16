@@ -139,7 +139,7 @@ class _LoginViewState extends State<LoginView>
                   children: [
                     Container(
                       padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
                       ),
@@ -168,7 +168,7 @@ class _LoginViewState extends State<LoginView>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
+                    const Text(
                       'This device is already registered with:',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -291,7 +291,7 @@ class _LoginViewState extends State<LoginView>
                         onPressed: () async {
                           // Replace with your support URL
                           final Uri url = Uri.parse(
-                              'https://docs.google.com/forms/d/e/1FAIpQLSe2rDJ9KaEYqIH4utsOY5xhb9HZit8wYA7nQhbrQj0ho5tLtA/viewform');
+                              'https://docs.google.com/forms/d/e/1FAIpQLSc9L3GsOIPDjih_XzI-ppw88HRKaYyICDdWK-YQF9z17MmUHg/viewform?usp=publish-editor');
                           if (await canLaunchUrl(url)) {
                             await launchUrl(url,
                                 mode: LaunchMode.externalApplication);
@@ -387,8 +387,8 @@ class _LoginViewState extends State<LoginView>
                           ),
                         ),
 
-                        CustomText(
-                          title: 'WC APP',
+                        const CustomText(
+                          title: 'WVC APP',
                           fontWeight: FontWeight.bold,
                           color: AppColors.white,
                           size: 30,
@@ -412,7 +412,7 @@ class _LoginViewState extends State<LoginView>
                                   scale: 4.v,
                                 ),
                                 Gap.h(12),
-                                CustomText(
+                                const CustomText(
                                   title: 'Get Rewards',
                                   color: AppColors.white,
                                   fontWeight: FontWeight.w500,
