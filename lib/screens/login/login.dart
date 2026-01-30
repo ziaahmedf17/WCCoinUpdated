@@ -532,18 +532,20 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wc_coin_app/core/constants/colors.dart';
 import 'package:wc_coin_app/core/constants/size_utils.dart';
-import 'package:wc_coin_app/screens/auth/login_screen.dart';
-import 'package:wc_coin_app/screens/auth/register_screen.dart';
+import 'package:wc_coin_app/main.dart';
+
+import 'package:wc_coin_app/screens/login/register.dart';
 import 'package:wc_coin_app/screens/root/root_view.dart';
 import 'package:wc_coin_app/shared/snackbar.dart';
 import 'package:wc_coin_app/shared/text_view.dart';
 import 'package:wc_coin_app/services/auth_service.dart';
+
+import 'login_screen.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -611,7 +613,7 @@ class _LoginViewState extends State<LoginView>
             Navigator.pushAndRemoveUntil(
               context,
               _createRoute(const RootView()),
-                  (route) => false,
+              (route) => false,
             );
           }
         });
@@ -655,7 +657,7 @@ class _LoginViewState extends State<LoginView>
               Container(
                 width: double.infinity,
                 padding:
-                const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                    const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Colors.orange.shade400, Colors.orange.shade600],
@@ -892,6 +894,7 @@ class _LoginViewState extends State<LoginView>
         ),
       ),
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: AppColors.primary,
         body: SafeArea(
           child: AnimatedBuilder(
@@ -986,7 +989,7 @@ class _LoginViewState extends State<LoginView>
                         Gap.v(16),
 
                         // Divider
-                        Padding(
+                        isLoginEnabled?   Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 40),
                           child: Row(
                             children: [
@@ -998,7 +1001,7 @@ class _LoginViewState extends State<LoginView>
                               ),
                               Padding(
                                 padding:
-                                const EdgeInsets.symmetric(horizontal: 16),
+                                    const EdgeInsets.symmetric(horizontal: 16),
                                 child: CustomText(
                                   title: 'OR',
                                   color: Colors.white.withOpacity(0.8),
@@ -1013,11 +1016,11 @@ class _LoginViewState extends State<LoginView>
                               ),
                             ],
                           ),
-                        ),
-                        Gap.v(16),
+                        ):const SizedBox(),
+                        isLoginEnabled?   Gap.v(16):const SizedBox(),
 
                         // Email Sign-in/Register Buttons
-                        Padding(
+                       isLoginEnabled? Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 25),
                           child: Row(
                             children: [
@@ -1040,7 +1043,7 @@ class _LoginViewState extends State<LoginView>
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                            const LoginScreen(),
+                                                const LoginScreen(),
                                           ),
                                         );
                                       },
@@ -1073,7 +1076,7 @@ class _LoginViewState extends State<LoginView>
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                            const RegisterScreen(),
+                                                const RegisterScreen(),
                                           ),
                                         );
                                       },
@@ -1092,7 +1095,7 @@ class _LoginViewState extends State<LoginView>
                               ),
                             ],
                           ),
-                        ),
+                        ):const SizedBox(),
                         Gap.v(30),
                       ],
                     ),

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -28,6 +29,32 @@ Future<bool> checkInternetConnection() async {
   }
 }
 
+// Global variable to store the login enable status
+bool _isLoginEnabled = false;
+
+Future<bool> getLoginEnableStatus() async {
+  try {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("WcIsLoginEnabled");
+    DatabaseEvent de = await ref.once();
+
+    if (de.snapshot.value != null) {
+      Map<String, dynamic> data =
+          Map<String, dynamic>.from(de.snapshot.value as Map);
+      _isLoginEnabled = data['isEnabled'] ?? false;
+      return _isLoginEnabled;
+    } else {
+      _isLoginEnabled = false;
+      return false;
+    }
+  } catch (e) {
+    _isLoginEnabled = false;
+    return false;
+  }
+}
+
+// Getter to access the global value
+bool get isLoginEnabled => _isLoginEnabled;
+
 Future<Map<String, dynamic>> getAdValues() async {
   DatabaseReference ref = FirebaseDatabase.instance.ref("WCAds");
   DatabaseEvent de = await ref.once();
@@ -52,6 +79,9 @@ Future<void> main() async {
 
   if (await checkInternetConnection() == true) {
     apads = await getAdValues();
+
+    await getLoginEnableStatus();
+    log(isLoginEnabled.toString());
 
     await _initializeCrashlytics();
     final adsProvider = GoogleAdmobProvider();
