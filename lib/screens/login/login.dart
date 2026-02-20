@@ -989,113 +989,132 @@ class _LoginViewState extends State<LoginView>
                         Gap.v(16),
 
                         // Divider
-                        isLoginEnabled?   Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 1,
-                                  color: Colors.white.withOpacity(0.3),
-                                ),
-                              ),
-                              Padding(
+                        isLoginEnabled
+                            ? Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: CustomText(
-                                  title: 'OR',
-                                  color: Colors.white.withOpacity(0.8),
-                                  size: 14,
+                                    const EdgeInsets.symmetric(horizontal: 40),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        height: 1,
+                                        color: Colors.white.withOpacity(0.3),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      child: CustomText(
+                                        title: 'OR',
+                                        color: Colors.white.withOpacity(0.8),
+                                        size: 14,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        height: 1,
+                                        color: Colors.white.withOpacity(0.3),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  height: 1,
-                                  color: Colors.white.withOpacity(0.3),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ):const SizedBox(),
-                        isLoginEnabled?   Gap.v(16):const SizedBox(),
+                              )
+                            : const SizedBox(),
+                        isLoginEnabled ? Gap.v(16) : const SizedBox(),
 
                         // Email Sign-in/Register Buttons
-                       isLoginEnabled? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 25),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 60.v,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: Colors.white.withOpacity(0.3),
-                                      width: 1.5,
-                                    ),
-                                  ),
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const LoginScreen(),
+                        isLoginEnabled
+                            ? Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 25),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        height: 60.v,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.2),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          border: Border.all(
+                                            color:
+                                                Colors.white.withOpacity(0.3),
+                                            width: 1.5,
                                           ),
-                                        );
-                                      },
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: const Center(
-                                        child: CustomText(
-                                          title: 'Sign In',
+                                        ),
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const LoginScreen(),
+                                                ),
+                                              );
+                                            },
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            child: const Center(
+                                              child: CustomText(
+                                                title: 'Sign In',
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                                size: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Gap.h(12),
+                                    Expanded(
+                                      child: Container(
+                                        height: 60.v,
+                                        decoration: BoxDecoration(
                                           color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-                                          size: 16,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Gap.h(12),
-                              Expanded(
-                                child: Container(
-                                  height: 60.v,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const RegisterScreen(),
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            // onTap: () {
+                                            //   // Navigator.push(
+                                            //   //   context,
+                                            //   //   MaterialPageRoute(
+                                            //   //     builder: (context) =>
+                                            //   //         const RegisterScreen(),
+                                            //   //   ),
+                                            //   // );
+                                            // },
+
+                                            onTap: _isLoading
+                                                ? null
+                                                : _handleGoogleSignIn,
+
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            child: Center(
+                                              child: _isLoading
+                                                  ? _buildLoadingWidget()
+                                                  : CustomText(
+                                                      title: 'Register',
+                                                      color: AppColors.primary,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      size: 16,
+                                                    ),
+                                            ),
                                           ),
-                                        );
-                                      },
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: const Center(
-                                        child: CustomText(
-                                          title: 'Sign Up',
-                                          color: AppColors.primary,
-                                          fontWeight: FontWeight.w600,
-                                          size: 16,
                                         ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        ):const SizedBox(),
+                              )
+                            : const SizedBox(),
                         Gap.v(30),
                       ],
                     ),
