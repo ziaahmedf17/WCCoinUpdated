@@ -345,7 +345,7 @@ class _InviteFriendsViewState extends State<InviteFriendsView> {
 🎁 Join me here and win free UCrewards! 🎁
 
 App Name: Win UC Get UC
-App Link: https://play.google.com/store/apps/details?id=com.get_unlimited_uc.earnuc_winuc_getuc
+App Link: https://play.google.com/store/apps/details?id=com.getuc.earn_ucwinuc
 
 📝 Steps to claim your $_referrerBonus coins:
 1️⃣ Sign up first
@@ -373,7 +373,7 @@ Download now and start earning! 💰
 🎁 Join me here and win free UCrewards! 🎁
 
 App Name: Win UC Get UC
-App Link: https://play.google.com/store/apps/details?id=com.get_unlimited_uc.earnuc_winuc_getuc
+App Link: https://play.google.com/store/apps/details?id=com.getuc.earn_ucwinuc
 
 📝 Steps to claim your $_referrerBonus coins:
 1️⃣ Sign up first

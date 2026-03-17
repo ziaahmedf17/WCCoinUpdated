@@ -289,7 +289,7 @@ class _EnterPromoCodeViewState extends State<EnterPromoCodeView> {
                   padding: EdgeInsets.only(left: 20.h),
                   child: const CustomText(
                     title:
-                        'Join this telegram channel to get exclusive promo codes',
+                        'Join this WhatsApp channel to get exclusive promo codes',
                   ),
                 ),
                 Gap.v(20),
@@ -299,7 +299,8 @@ class _EnterPromoCodeViewState extends State<EnterPromoCodeView> {
                     width: 150,
                     buttonTitle: 'Join Now',
                     onCLick: () async {
-                      final Uri url = Uri.parse('https://t.me/WcCoinsApp');
+                      final Uri url = Uri.parse(
+                          'https://whatsapp.com/channel/0029Vb7sjxLEwEjsk2qq371k');
 
                       if (!await launchUrl(
                         url,

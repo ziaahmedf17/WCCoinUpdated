@@ -532,7 +532,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:device_info_plus/device_info_plus.dart';
+// import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:math';
 
 // Import your User model
@@ -581,121 +581,121 @@ class AuthService {
 
   // ==================== DEVICE ID METHODS (YOUR EXISTING CODE) ====================
 
-  Future<String> _generateDeviceId() async {
-    try {
-      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      String deviceId = '';
+  // Future<String> _generateDeviceId() async {
+  //   try {
+  //     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  //     String deviceId = '';
 
-      if (Platform.isAndroid) {
-        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+  //     if (Platform.isAndroid) {
+  //       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
 
-        // Use Android ID as primary identifier
-        deviceId = androidInfo.id;
+  //       // Use Android ID as primary identifier
+  //       deviceId = androidInfo.id;
 
-        // If Android ID is null/empty, try using other hardware identifiers
-        if (deviceId.isEmpty || deviceId == 'unknown') {
-          // Create composite ID from hardware info
-          final brand = androidInfo.brand ?? 'unknown';
-          final model = androidInfo.model ?? 'unknown';
-          final product = androidInfo.product ?? 'unknown';
-          final hardware = androidInfo.hardware ?? 'unknown';
+  //       // If Android ID is null/empty, try using other hardware identifiers
+  //       if (deviceId.isEmpty || deviceId == 'unknown') {
+  //         // Create composite ID from hardware info
+  //         final brand = androidInfo.brand ?? 'unknown';
+  //         final model = androidInfo.model ?? 'unknown';
+  //         final product = androidInfo.product ?? 'unknown';
+  //         final hardware = androidInfo.hardware ?? 'unknown';
 
-          deviceId = '${brand}_${model}_${product}_${hardware}';
-        }
-      } else if (Platform.isIOS) {
-        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+  //         deviceId = '${brand}_${model}_${product}_${hardware}';
+  //       }
+  //     } else if (Platform.isIOS) {
+  //       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
 
-        // Use identifierForVendor as primary identifier
-        deviceId = iosInfo.identifierForVendor ?? '';
+  //       // Use identifierForVendor as primary identifier
+  //       deviceId = iosInfo.identifierForVendor ?? '';
 
-        // If identifierForVendor is null/empty, create composite ID
-        if (deviceId.isEmpty) {
-          final name = iosInfo.name ?? 'iPhone';
-          final model = iosInfo.model ?? 'unknown';
-          final systemVersion = iosInfo.systemVersion ?? 'unknown';
+  //       // If identifierForVendor is null/empty, create composite ID
+  //       if (deviceId.isEmpty) {
+  //         final name = iosInfo.name ?? 'iPhone';
+  //         final model = iosInfo.model ?? 'unknown';
+  //         final systemVersion = iosInfo.systemVersion ?? 'unknown';
 
-          deviceId = '${name}_${model}_${systemVersion}';
-        }
-      } else {
-        // For other platforms, throw an error instead of generating random ID
-        throw UnsupportedError(
-            'Device ID generation not supported on this platform');
-      }
+  //         deviceId = '${name}_${model}_${systemVersion}';
+  //       }
+  //     } else {
+  //       // For other platforms, throw an error instead of generating random ID
+  //       throw UnsupportedError(
+  //           'Device ID generation not supported on this platform');
+  //     }
 
-      // Validate that we have a real device ID
-      if (deviceId.isEmpty || deviceId == 'unknown') {
-        throw Exception('Unable to obtain real device identifier');
-      }
+  //     // Validate that we have a real device ID
+  //     if (deviceId.isEmpty || deviceId == 'unknown') {
+  //       throw Exception('Unable to obtain real device identifier');
+  //     }
 
-      // Clean the ID but ensure it's not empty after cleaning
-      String cleanedId =
-          deviceId.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '').toLowerCase();
+  //     // Clean the ID but ensure it's not empty after cleaning
+  //     String cleanedId =
+  //         deviceId.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '').toLowerCase();
 
-      if (cleanedId.isEmpty) {
-        throw Exception('Device ID became empty after cleaning');
-      }
+  //     if (cleanedId.isEmpty) {
+  //       throw Exception('Device ID became empty after cleaning');
+  //     }
 
-      // Limit length but ensure we don't create an empty string
-      final maxLength = 50;
-      if (cleanedId.length > maxLength) {
-        cleanedId = cleanedId.substring(0, maxLength);
-      }
+  //     // Limit length but ensure we don't create an empty string
+  //     final maxLength = 50;
+  //     if (cleanedId.length > maxLength) {
+  //       cleanedId = cleanedId.substring(0, maxLength);
+  //     }
 
-      print('Generated real device ID: $cleanedId');
-      return cleanedId;
-    } catch (e) {
-      print('Critical error generating device ID: $e');
-      // Instead of falling back to random ID, rethrow the error
-      // This way the calling code knows there's an issue
-      rethrow;
-    }
-  }
+  //     print('Generated real device ID: $cleanedId');
+  //     return cleanedId;
+  //   } catch (e) {
+  //     print('Critical error generating device ID: $e');
+  //     // Instead of falling back to random ID, rethrow the error
+  //     // This way the calling code knows there's an issue
+  //     rethrow;
+  //   }
+  // }
 
-  // Updated _getDeviceId method with better error handling
-  Future<String> _getDeviceId() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      String? deviceId = prefs.getString('device_id');
+  // // Updated _getDeviceId method with better error handling
+  // Future<String> _getDeviceId() async {
+  //   try {
+  //     final prefs = await SharedPreferences.getInstance();
+  //     String? deviceId = prefs.getString('device_id');
 
-      if (deviceId == null || deviceId.isEmpty) {
-        // Try to generate real device ID
-        try {
-          deviceId = await _generateDeviceId();
-          await prefs.setString('device_id', deviceId);
-          print('Stored new real device ID: $deviceId');
-        } catch (e) {
-          print('Failed to generate real device ID: $e');
-          // Instead of generating random ID, return an error
-          throw Exception('Unable to obtain device identifier: $e');
-        }
-      } else {
-        print('Using stored device ID: $deviceId');
-      }
+  //     if (deviceId == null || deviceId.isEmpty) {
+  //       // Try to generate real device ID
+  //       try {
+  //         deviceId = await _generateDeviceId();
+  //         await prefs.setString('device_id', deviceId);
+  //         print('Stored new real device ID: $deviceId');
+  //       } catch (e) {
+  //         print('Failed to generate real device ID: $e');
+  //         // Instead of generating random ID, return an error
+  //         throw Exception('Unable to obtain device identifier: $e');
+  //       }
+  //     } else {
+  //       print('Using stored device ID: $deviceId');
+  //     }
 
-      return deviceId;
-    } catch (e) {
-      print('Error in _getDeviceId: $e');
-      rethrow; // Don't mask the error with a random ID
-    }
-  }
+  //     return deviceId;
+  //   } catch (e) {
+  //     print('Error in _getDeviceId: $e');
+  //     rethrow; // Don't mask the error with a random ID
+  //   }
+  // }
 
-  // If you absolutely need a fallback (not recommended), make it explicit
-  Future<String> _getDeviceIdWithFallback() async {
-    try {
-      return await _getDeviceId();
-    } catch (e) {
-      print('WARNING: Using fallback random ID due to error: $e');
-      // Generate a more identifiable random ID that indicates it's a fallback
-      final randomId = 'fallback_${_generateRandomId()}';
+  // // If you absolutely need a fallback (not recommended), make it explicit
+  // Future<String> _getDeviceIdWithFallback() async {
+  //   try {
+  //     return await _getDeviceId();
+  //   } catch (e) {
+  //     print('WARNING: Using fallback random ID due to error: $e');
+  //     // Generate a more identifiable random ID that indicates it's a fallback
+  //     final randomId = 'fallback_${_generateRandomId()}';
 
-      // Optionally store this with a flag indicating it's not a real device ID
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('device_id', randomId);
-      await prefs.setBool('is_fallback_device_id', true);
+  //     // Optionally store this with a flag indicating it's not a real device ID
+  //     final prefs = await SharedPreferences.getInstance();
+  //     await prefs.setString('device_id', randomId);
+  //     await prefs.setBool('is_fallback_device_id', true);
 
-      return randomId;
-    }
-  }
+  //     return randomId;
+  //   }
+  // }
 
   String _generateRandomId() {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -704,10 +704,10 @@ class AuthService {
         .join();
   }
 
-  // Get device ID (public method)
-  Future<String> getDeviceId() async {
-    return await _getDeviceId();
-  }
+  // // Get device ID (public method)
+  // Future<String> getDeviceId() async {
+  //   return await _getDeviceId();
+  // }
 
   // ==================== TOKEN MANAGEMENT METHODS ====================
 
@@ -865,7 +865,6 @@ class AuthService {
 
       final data = jsonDecode(response.body);
 
-
       print(response.statusCode);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -942,7 +941,7 @@ class AuthService {
   }) async {
     try {
       // Get device ID
-      final deviceId = await _getDeviceId();
+      // final deviceId = await _getDeviceId();
 
       final response = await http.post(
         Uri.parse('$baseUrl/signin'),
@@ -966,8 +965,6 @@ class AuthService {
           // Save token and user data
           await _saveToken(token);
           await _saveUserData(user);
-
-
 
           print(data['message']);
           print("token");
@@ -1180,7 +1177,7 @@ class AuthService {
       await _auth.signInWithCredential(credential);
 
       // Get device ID
-      final deviceId = await _getDeviceId();
+      // final deviceId = await _getDeviceId();
 
       // Prepare data for your API
       final name = googleUser.displayName ?? '';
@@ -1196,7 +1193,7 @@ class AuthService {
               'name': name,
               'email': email,
               'avatar': avatar,
-              'device_id': deviceId,
+              // 'device_id': deviceId,
             }),
           )
           .timeout(const Duration(seconds: 15));
