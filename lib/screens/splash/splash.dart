@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:upgrader/upgrader.dart';
 import 'package:wc_coin_app/core/constants/colors.dart';
 import 'package:wc_coin_app/core/constants/size_utils.dart';
 import 'package:wc_coin_app/screens/home/home.dart';
@@ -141,8 +142,11 @@ class _SplashViewState extends State<SplashView>
     Navigator.pushAndRemoveUntil(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const RootView(),
+        pageBuilder: (context, animation, secondaryAnimation) => UpgradeAlert(
+            showIgnore: false,
+            showLater: false,
+            barrierDismissible: false,
+            child: const RootView()),
         transitionDuration: const Duration(milliseconds: 500),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
@@ -158,8 +162,11 @@ class _SplashViewState extends State<SplashView>
     Navigator.pushAndRemoveUntil(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const LoginView(),
+        pageBuilder: (context, animation, secondaryAnimation) => UpgradeAlert(
+            showIgnore: false,
+            showLater: false,
+            barrierDismissible: false,
+            child: const LoginView()),
         transitionDuration: const Duration(milliseconds: 500),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);

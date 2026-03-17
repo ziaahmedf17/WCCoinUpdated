@@ -11,6 +11,7 @@ import 'package:wc_coin_app/core/constants/ad_helper/rewarded_ad_loading.dart';
 import 'package:wc_coin_app/core/constants/colors.dart';
 import 'package:wc_coin_app/core/constants/size_utils.dart';
 import 'package:wc_coin_app/main.dart';
+import 'package:wc_coin_app/models/reward_values_model.dart';
 import 'package:wc_coin_app/screens/home/components/bonus.dart';
 import 'package:wc_coin_app/screens/home/components/coin_earned.dart';
 import 'package:wc_coin_app/screens/home/components/home_appbar.dart';
@@ -22,6 +23,7 @@ import 'package:wc_coin_app/screens/spin_and_win/spin_and_win.dart';
 import 'package:wc_coin_app/screens/subscribe/subscribe_view.dart';
 import 'package:wc_coin_app/screens/visit_to_earn/visit_to_earn_view.dart';
 import 'package:wc_coin_app/services/network_listener.dart';
+import 'package:wc_coin_app/services/reward_values_service.dart';
 import 'package:wc_coin_app/services/user_profile_service.dart';
 import 'package:wc_coin_app/shared/primary_btn.dart';
 import 'package:wc_coin_app/shared/snackbar.dart';
@@ -29,7 +31,7 @@ import 'package:wc_coin_app/shared/text_view.dart';
 import 'package:wc_coin_app/models/user_model.dart';
 
 class HomeView extends StatefulWidget {
-  HomeView({super.key});
+  const HomeView({super.key});
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -54,7 +56,8 @@ class _HomeViewState extends State<HomeView>
   late AnimationController _adAnimationController;
   late Animation<double> _adScaleAnimation;
   GoogleAdmobProvider adVM = GoogleAdmobProvider();
-
+  final RewardsService _rewardsService = RewardsService();
+  RewardsModel _rewards = RewardsModel.defaults();
   List img = [
     'spin.png',
     'scratch.png',
@@ -76,6 +79,17 @@ class _HomeViewState extends State<HomeView>
     'Promo Code',
     'Redeem UC',
   ];
+
+  List get cardSubtitles => [
+        'Win up to 100 Coins',
+        'Win up to 100 Coins',
+        'Win up to 100 Coins',
+        'Win up to ${_rewards.ads} Coins',
+        'Win up to ${_rewards.link} Coins',
+        'Win up to ${_rewards.social} Coins',
+        'Win up to ${_rewards.promocode} Coins',
+        'Redeem PUBG UC',
+      ];
 
   List nameTap = [
     'TAP TO SPIN',
@@ -118,6 +132,18 @@ class _HomeViewState extends State<HomeView>
     _fetchUserProfile();
     _checkAdTimerStatus();
     _startAdApiCheckTimer();
+    _fetchRewards();
+  }
+
+  Future<void> _fetchRewards() async {
+    try {
+      final rewards = await _rewardsService.fetchRewards();
+      if (!mounted) return;
+      setState(() => _rewards = rewards);
+    } catch (e) {
+      // Silently fail — defaults (0) will be used
+      debugPrint('Failed to load rewards: $e');
+    }
   }
 
   void _startRealtimeInternetListener() {
@@ -429,8 +455,8 @@ class _HomeViewState extends State<HomeView>
                 ),
                 const SizedBox(height: 12),
                 const CustomText(
-                  title: 'Watch a short video ad to earn 250 coins!',
-                  size: 16,
+                  title: 'Watch a short video ad to earn coins!',
+                  size: 14,
                   color: Colors.white,
                 ),
                 const SizedBox(height: 8),
@@ -440,15 +466,15 @@ class _HomeViewState extends State<HomeView>
                     color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.monetization_on,
                           color: Colors.amber, size: 20),
                       SizedBox(width: 8),
                       CustomText(
-                        title: '250 COINS',
-                        size: 18,
+                        title: cardSubtitles[3],
+                        size: 16,
                         color: Colors.amber,
                       ),
                     ],
@@ -762,6 +788,7 @@ class _HomeViewState extends State<HomeView>
                             padding: EdgeInsets.symmetric(horizontal: 25.h),
                             child: CoinsEarnedSection(
                               coins: _user?.coins ?? 0,
+                              value: 'Win up to ${_rewards.hourly} coins',
                               // ontap: _fetchUserProfile,
                               ontap: () async {
                                 apads['int']
@@ -779,7 +806,9 @@ class _HomeViewState extends State<HomeView>
                           Gap.v(20),
                           Padding(
                               padding: EdgeInsets.symmetric(horizontal: 25.h),
-                              child: BonusSection()),
+                              child: BonusSection(
+                                value: 'Win up to ${_rewards.daily} coins',
+                              )),
                           Gap.v(10),
                           GridView.builder(
                             physics: const NeverScrollableScrollPhysics(),
@@ -840,11 +869,14 @@ class _HomeViewState extends State<HomeView>
                                             ),
                                             Gap.v(5),
                                             CustomText(
+                                              // title: cardSubtitles[index],
+
                                               title: isWatchAd
                                                   ? (_canClaimAd
-                                                      ? 'Ready!'
+                                                      ? '${cardSubtitles[3]}\nReady'
                                                       : _formatAdTime())
-                                                  : 'Win up to 250 Coins',
+                                                  : cardSubtitles[index],
+                                              alignment: TextAlign.center,
                                               size: 12,
                                               fontWeight: FontWeight.w400,
                                               color: isWatchAd
@@ -854,7 +886,7 @@ class _HomeViewState extends State<HomeView>
                                                   : AppColors.fontColor
                                                       .withOpacity(.6),
                                             ),
-                                            Gap.v(30),
+                                            Gap.v(20),
                                             PrimaryBTN(
                                               width: 140,
                                               height: 40,

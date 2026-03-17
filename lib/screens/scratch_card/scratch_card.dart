@@ -43,7 +43,19 @@ class _ScratchCardViewState extends State<ScratchCardView>
   late Animation<double> _scaleAnimation;
 
   // Predefined coin values for scratch cards
-  final List<String> coinOptions = ['33', '33', '33', '33', '33', '33', '33'];
+  final List<String> coinOptions = [
+    '01',
+    '03',
+    '05',
+    '07',
+    '09',
+    '11',
+    '13',
+    '15',
+    '17',
+    '19',
+    '20'
+  ];
 
   @override
   void initState() {

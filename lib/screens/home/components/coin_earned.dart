@@ -17,6 +17,7 @@ class CoinsEarnedSection extends StatefulWidget {
   final int coins;
   final bool isLoading;
   final Function() ontap;
+  final String value;
   // final VoidCallback? onCoinsUpdated;
 
   const CoinsEarnedSection({
@@ -25,6 +26,7 @@ class CoinsEarnedSection extends StatefulWidget {
     // this.onCoinsUpdated,
     super.key,
     required this.ontap,
+    required this.value,
   });
 
   @override
@@ -352,10 +354,20 @@ class _CoinsEarnedSectionState extends State<CoinsEarnedSection>
                 color: AppColors.white,
                 fontWeight: FontWeight.w600,
               ),
-              subtitle: CustomText(
-                title: _formatTime(),
-                size: 12,
-                color: Colors.white,
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(
+                    title: widget.value,
+                    size: 12,
+                    color: Colors.white,
+                  ),
+                  CustomText(
+                    title: _formatTime(),
+                    size: 12,
+                    color: Colors.white,
+                  ),
+                ],
               ),
               trailing: _isClaimingBonus
                   ? Container(

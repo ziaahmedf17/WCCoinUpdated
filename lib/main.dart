@@ -8,6 +8,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:upgrader/upgrader.dart';
 import 'package:wc_coin_app/core/constants/ad_helper/ad_helper.dart';
 import 'package:wc_coin_app/core/constants/size_utils.dart';
 import 'package:wc_coin_app/firebase_options.dart';
@@ -29,7 +30,6 @@ Future<bool> checkInternetConnection() async {
   }
 }
 
-// Global variable to store the login enable status
 bool _isLoginEnabled = false;
 
 Future<bool> getLoginEnableStatus() async {
@@ -52,7 +52,6 @@ Future<bool> getLoginEnableStatus() async {
   }
 }
 
-// Getter to access the global value
 bool get isLoginEnabled => _isLoginEnabled;
 
 Future<Map<String, dynamic>> getAdValues() async {
@@ -73,7 +72,6 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
@@ -95,9 +93,6 @@ Future<void> main() async {
       'native': false,
     };
   }
-  print(apads);
-
-  // AdHelper.init();
 
   runApp(
     MultiProvider(
@@ -126,9 +121,8 @@ class MyApp extends StatelessWidget {
           title: 'WC Coin',
           theme: ThemeData(useMaterial3: false),
           debugShowCheckedModeBanner: false,
+          navigatorObservers: [observer],
           home: const SplashView(),
-          // home: ConnectivityWrapper(child: SplashView()),
-          // home: PostApiDemo(),
         ),
       ),
     );

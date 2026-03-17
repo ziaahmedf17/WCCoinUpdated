@@ -13,10 +13,12 @@ import 'package:wc_coin_app/shared/snackbar.dart';
 import 'package:wc_coin_app/shared/text_view.dart';
 
 class BonusSection extends StatefulWidget {
+  final String value;
   // final VoidCallback? onCoinsUpdated;
 
   const BonusSection({
     super.key,
+    required this.value,
     // this.onCoinsUpdated,
   });
 
@@ -382,11 +384,22 @@ class _BonusSectionState extends State<BonusSection>
               height: 0,
               fontWeight: FontWeight.w600,
             ),
-            subtitle: CustomText(
-              title: _formatTime(),
-              size: 12,
-              color: AppColors.fontColor,
-              height: 0,
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomText(
+                  title: widget.value,
+                  size: 12,
+                  color: AppColors.fontColor,
+                  height: 0,
+                ),
+                CustomText(
+                  title: _formatTime(),
+                  size: 12,
+                  color: AppColors.fontColor,
+                  height: 0,
+                ),
+              ],
             ),
             trailing: _isClaiming
                 ? const Padding(

@@ -41,13 +41,13 @@ class _SpinAndWinViewState extends State<SpinAndWinView>
   // Define the wheel items with coins
   final List<String> wheelItems = [
     '0',
+    '5',
     '10',
+    '15',
     '20',
+    '25',
     '30',
-    '40',
-    '50',
-    '60',
-    '70',
+    '35',
   ];
 
   // Colors for each segment
