@@ -8,14 +8,10 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:upgrader/upgrader.dart';
 import 'package:wc_coin_app/core/constants/ad_helper/ad_helper.dart';
 import 'package:wc_coin_app/core/constants/size_utils.dart';
 import 'package:wc_coin_app/firebase_options.dart';
-import 'package:wc_coin_app/screens/exm.dart';
-import 'package:wc_coin_app/screens/profile/my_profile.dart';
 import 'package:wc_coin_app/screens/splash/splash.dart';
-import 'package:wc_coin_app/services/network_listener.dart';
 
 Map<String, dynamic> apads = {};
 

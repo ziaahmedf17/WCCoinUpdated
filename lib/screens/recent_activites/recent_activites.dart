@@ -83,7 +83,7 @@ class _RecentActivitiesState extends State<RecentActivities> {
             color: Colors.red.withOpacity(0.7),
           ),
           Gap.v(20),
-          CustomText(
+          const CustomText(
             title: "Error loading activities",
             size: 18,
             color: Colors.red,
@@ -113,24 +113,6 @@ class _RecentActivitiesState extends State<RecentActivities> {
     );
   }
 
-  String _getActivityIcon(String logName) {
-    switch (logName) {
-      case 'package_purchase':
-        return "assets/images/purchase_icon.png";
-      case 'daily_bonus_claim':
-        return "assets/images/bonus_icon.png";
-      case 'google_signin_persistent':
-        return "assets/images/login_icon.png";
-      case 'transaction_view':
-      case 'transaction_list':
-        return "assets/images/transaction_icon.png";
-      case 'profile_view':
-        return "assets/images/profile_icon.png";
-      default:
-        return "assets/images/recent_activity1.png";
-    }
-  }
-
   String _formatTrailingText(Activity activity) {
     final properties = activity.properties;
 
@@ -156,7 +138,7 @@ class _RecentActivitiesState extends State<RecentActivities> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bgColor,
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         title: 'Recent Activities',
         hasLeading: false,
       ),
@@ -188,7 +170,7 @@ class _RecentActivitiesState extends State<RecentActivities> {
 
                 return Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5.h),
-                  child: ActivityTile(
+                  child: activityTile(
                     // image: _getActivityIcon(activity.logName),
                     image: "assets/icons/WCC.png",
                     tile: activity.description,
@@ -204,7 +186,7 @@ class _RecentActivitiesState extends State<RecentActivities> {
     );
   }
 
-  Widget ActivityTile({
+  Widget activityTile({
     required String tile,
     required String image,
     required String subtitle,
@@ -217,13 +199,6 @@ class _RecentActivitiesState extends State<RecentActivities> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          // boxShadow: [
-          //   BoxShadow(
-          //     color: AppColors.fontColor.withOpacity(.1),
-          //     spreadRadius: 2,
-          //     blurRadius: 10,
-          //   )
-          // ],
         ),
         child: ListTile(
           leading: CircleAvatar(
@@ -242,13 +217,6 @@ class _RecentActivitiesState extends State<RecentActivities> {
             size: 12,
             color: AppColors.fontColor,
           ),
-          // trailing: traling.isNotEmpty
-          //     ? CustomText(
-          //         size: 18.fSize,
-          //         title: traling,
-          //         color: const Color(0xff44FF00),
-          //       )
-          //     : null,
           trailing: tile.contains('UC')
               ? CustomText(
                   title: traling.replaceAll('+', '-'),

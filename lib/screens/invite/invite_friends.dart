@@ -431,7 +431,7 @@ Download now and start earning! 💰
                       ),
                       Gap.v(20),
                       CustomText(
-                        size: 26.fSize,
+                        size: 20.fSize,
                         title: "Invite friends and get bonus coins!",
                         color: AppColors.fontColor,
                         fontWeight: FontWeight.bold,
@@ -440,7 +440,8 @@ Download now and start earning! 💰
                       Gap.v(15),
                       CustomText(
                         size: 17,
-                        title: "Earn rewards for every new member you refer",
+                        title:
+                            "Invite friends and receive bonus coins as soon as they make their first UC transaction",
                         color: AppColors.fontColor.withOpacity(.7),
                         fontWeight: FontWeight.w300,
                         alignment: TextAlign.center,
