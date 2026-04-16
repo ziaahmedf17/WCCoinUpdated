@@ -88,7 +88,7 @@ class _BonusSectionState extends State<BonusSection>
           "Authorization": "Bearer $token",
           "Accept": "application/json",
         },
-      );
+      ).timeout(const Duration(seconds: 30));
 
       if (!mounted) return;
 
@@ -102,11 +102,8 @@ class _BonusSectionState extends State<BonusSection>
         }
       }
     } catch (e) {
-      if (!mounted) return;
-      showCustomSnackBar(
-          "No internet connection. Please check your network and try again.",
-          context,
-          isError: true);
+      // Silently ignore — no snackbar spam on background timer calls
+      debugPrint('_fetchDailyBonusStatus error: $e');
     }
   }
 
@@ -123,7 +120,7 @@ class _BonusSectionState extends State<BonusSection>
           "Authorization": "Bearer $token",
           "Accept": "application/json",
         },
-      );
+      ).timeout(const Duration(seconds: 30));
 
       if (!mounted) return;
 
@@ -151,11 +148,8 @@ class _BonusSectionState extends State<BonusSection>
         }
       }
     } catch (e) {
-      if (!mounted) return;
-      showCustomSnackBar(
-          "No internet connection. Please check your network and try again.",
-          context,
-          isError: true);
+      // Silently ignore — no snackbar spam on background timer calls
+      debugPrint('_checkTimerStatus error: $e');
     }
   }
 
@@ -256,7 +250,7 @@ class _BonusSectionState extends State<BonusSection>
         "Accept": "application/json",
         "Content-Type": "application/json",
       },
-    );
+    ).timeout(const Duration(seconds: 30));
 
     if (!mounted) return;
 
@@ -408,9 +402,7 @@ class _BonusSectionState extends State<BonusSection>
                       height: 25,
                       width: 25,
                       child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
+                          strokeWidth: 2, color: Color(0xff8200DB)),
                     ),
                   )
                 : ScaleTransition(
@@ -418,12 +410,13 @@ class _BonusSectionState extends State<BonusSection>
                         ? _scaleAnimation
                         : AlwaysStoppedAnimation(1.0),
                     child: PrimaryBTN(
-                      buttonTitle: 'Claim',
-                      onCLick: _handleClaimBonus,
-                      height: 40,
-                      width: 100,
-                      btColor: Color(0xff8200DB),
-                    ),
+                        buttonTitle: _canClaim ? 'Claim' : 'Wait',
+                        onCLick: _handleClaimBonus,
+                        height: 40,
+                        width: 100,
+                        btColor: _canClaim
+                            ? Color(0xff8200DB)
+                            : Color(0xff8200DB).withOpacity(.3)),
                   ),
           ),
 

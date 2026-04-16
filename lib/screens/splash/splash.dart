@@ -1,5 +1,5 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:wc_coin_app/core/constants/colors.dart';
 import 'package:wc_coin_app/core/constants/size_utils.dart';
@@ -30,6 +30,8 @@ class _SplashViewState extends State<SplashView>
   void initState() {
     super.initState();
 
+    requestPermission();
+
     // Initialize animations
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 2000),
@@ -59,7 +61,7 @@ class _SplashViewState extends State<SplashView>
 
   Future<void> _initializeApp() async {
     // Check internet connection first
-    if (await checkInternetConnection() == false) {
+    if (await ConnectivityHelper.checkInternetConnection() == false) {
       if (mounted) {
         ConnectivityHelper.showNoInternetDialog(
           context,
@@ -120,20 +122,17 @@ class _SplashViewState extends State<SplashView>
     }
   }
 
-  Future<bool> checkInternetConnection() async {
-    try {
-      var connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult.contains(ConnectivityResult.mobile)) {
-        return true;
-      } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      print('Error checking internet: $e');
-      return false;
-    }
+
+  Future<void> requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    print('Permission: ${settings.authorizationStatus}');
   }
 
   void _navigateToMain() {

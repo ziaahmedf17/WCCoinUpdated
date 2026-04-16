@@ -1,7 +1,5 @@
-
-
-
 import 'dart:convert';
+import 'dart:io'; // Add this for SocketException
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/activity_model.dart';
@@ -10,28 +8,36 @@ class ActivityService {
   static const String _baseUrl = "https://wc-admin.genwizz.com/api/activity";
 
   Future<ActivityResponse> fetchActivities({int page = 1}) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('api_token');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('api_token');
 
-    if (token == null) {
-      throw Exception("No API token found in SharedPreferences");
-    }
+      if (token == null) {
+        throw Exception("No API token found in SharedPreferences");
+      }
 
-    final url = page > 1 ? "$_baseUrl?page=$page" : _baseUrl;
+      final url = page > 1 ? "$_baseUrl?page=$page" : _baseUrl;
 
-    final response = await http.get(
-      Uri.parse(url),
-      headers: {
-        "Authorization": "Bearer $token",
-        "Accept": "application/json",
-      },
-    );
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          "Authorization": "Bearer $token",
+          "Accept": "application/json",
+        },
+      ).timeout(const Duration(seconds: 30)); // Add timeout
 
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      return ActivityResponse.fromJson(jsonData);
-    } else {
-      throw Exception("Failed to load activities: ${response.statusCode}");
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        return ActivityResponse.fromJson(jsonData);
+      } else {
+        throw Exception("Failed to load activities: ${response.statusCode}");
+      }
+    } on SocketException {
+      throw Exception("No Internet"); // Special flag for no internet
+    } on http.ClientException {
+      throw Exception("network_error"); // Handle network errors
+    } catch (e) {
+      throw Exception("unknown_error: ${e.toString()}");
     }
   }
 

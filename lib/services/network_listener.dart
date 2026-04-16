@@ -1,7 +1,7 @@
 // Create this file: lib/core/helpers/connectivity_helper.dart
 
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:wc_coin_app/core/constants/colors.dart';
 import 'package:wc_coin_app/core/constants/size_utils.dart';
 import 'package:wc_coin_app/shared/text_view.dart';
@@ -13,19 +13,31 @@ class ConnectivityHelper {
   factory ConnectivityHelper() => _instance;
   ConnectivityHelper._internal();
 
-  /// Check if device has internet connection
+  /// Truly checks internet by attempting a real DNS lookup.
+  /// This is the ONLY reliable way — connectivity_plus only checks
+  /// if a network interface is active, not if internet is reachable.
   static Future<bool> checkInternetConnection() async {
     try {
-      var connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult.contains(ConnectivityResult.mobile)) {
-        return true;
-      } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
-        return true;
-      } else {
-        return false;
+      // Try multiple well-known hosts for reliability
+      final hosts = ['google.com', 'cloudflare.com', '8.8.8.8'];
+
+      for (final host in hosts) {
+        try {
+          final result = await InternetAddress.lookup(host)
+              .timeout(const Duration(seconds: 5));
+          if (result.isNotEmpty && result.first.rawAddress.isNotEmpty) {
+            return true; // Got a valid response — internet is up
+          }
+        } catch (_) {
+          // This host failed, try the next one
+          continue;
+        }
       }
+
+      // All hosts failed — truly no internet
+      return false;
     } catch (e) {
-      print('Error checking internet: $e');
+      debugPrint('Error checking internet: $e');
       return false;
     }
   }
@@ -88,8 +100,8 @@ class ConnectivityHelper {
     );
   }
 
-  /// Check internet and show dialog if no connection
-  /// Returns true if connected, false if not
+  /// Check internet and show dialog if no connection.
+  /// Returns true if connected, false if not.
   static Future<bool> checkAndShowDialog(
     BuildContext context, {
     VoidCallback? onRetry,
@@ -103,14 +115,17 @@ class ConnectivityHelper {
     return hasInternet;
   }
 
-  /// Listen to connectivity changes
-  static Stream<List<ConnectivityResult>> get connectivityStream =>
-      Connectivity().onConnectivityChanged;
+  /// Listen to connectivity changes.
+  /// NOTE: Use this only as a hint to trigger a real check via
+  /// [checkInternetConnection], not as the final verdict.
+  // static Stream<List<ConnectivityResult>> get connectivityStream =>
+  //     Connectivity().onConnectivityChanged;
 
-  /// Check if connectivity result indicates no internet
-  static bool hasNoInternet(List<ConnectivityResult> results) {
-    return results.contains(ConnectivityResult.none) ||
-        results.isEmpty ||
-        (results.length == 1 && results.first == ConnectivityResult.none);
-  }
+  /// Check if connectivity result indicates no internet.
+  /// Prefer using [checkInternetConnection] over this for accuracy.
+  // static bool hasNoInternet(List<ConnectivityResult> results) {
+  //   return results.contains(ConnectivityResult.none) ||
+  //       results.isEmpty ||
+  //       (results.length == 1 && results.first == ConnectivityResult.none);
+  // }
 }

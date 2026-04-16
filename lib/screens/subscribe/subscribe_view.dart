@@ -321,6 +321,72 @@ class _SubscribeToEarnViewState extends State<SubscribeToEarnView>
     );
   }
 
+  Widget _buildErrorWidget(String error) {
+    return Center(
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 24.h, vertical: 20.v),
+        padding: EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+          border: Border.all(
+            color: Colors.red.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Animated/Shaking icon (optional)
+            Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.error_outline,
+                size: 64.v,
+                color: Colors.red.withOpacity(0.7),
+              ),
+            ),
+            Gap.v(20),
+            CustomText(
+              title: "Error loading Links",
+              size: 18,
+              color: AppColors.fontColor,
+              fontWeight: FontWeight.w600,
+            ),
+            Gap.v(12),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12.v),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: CustomText(
+                title: error.replaceAll('Exception:', ''),
+                size: 14,
+                color: Colors.red.withOpacity(0.8),
+                alignment: TextAlign.center,
+                maxLines: 5,
+              ),
+            ),
+            Gap.v(24),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -369,11 +435,7 @@ class _SubscribeToEarnViewState extends State<SubscribeToEarnView>
                   return _buildLoadingWidget();
                 } else if (snapshot.hasError) {
                   return Center(
-                    child: CustomText(
-                      title: "Error: ${snapshot.error}",
-                      size: 16,
-                      color: Colors.red,
-                    ),
+                    child: _buildErrorWidget(snapshot.error.toString()),
                   );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return _buildEmptyState();

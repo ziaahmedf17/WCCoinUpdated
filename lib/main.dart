@@ -1,6 +1,6 @@
 import 'dart:developer';
+import 'dart:io';
 import 'dart:ui';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -12,18 +12,26 @@ import 'package:wc_coin_app/core/constants/ad_helper/ad_helper.dart';
 import 'package:wc_coin_app/core/constants/size_utils.dart';
 import 'package:wc_coin_app/firebase_options.dart';
 import 'package:wc_coin_app/screens/splash/splash.dart';
+import 'package:wc_coin_app/services/push_notifications.dart';
 
 Map<String, dynamic> apads = {};
 
+/// Reliable internet check using DNS lookup — works on both WiFi and mobile data.
+/// connectivity_plus only checks if a network interface is active, not reachability.
 Future<bool> checkInternetConnection() async {
-  var connectivityResult = await (Connectivity().checkConnectivity());
-  if (connectivityResult.contains(ConnectivityResult.mobile)) {
-    return true;
-  } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
-    return true;
-  } else {
-    return false;
+  final hosts = ['google.com', 'cloudflare.com', '8.8.8.8'];
+  for (final host in hosts) {
+    try {
+      final result = await InternetAddress.lookup(host)
+          .timeout(const Duration(seconds: 5));
+      if (result.isNotEmpty && result.first.rawAddress.isNotEmpty) {
+        return true;
+      }
+    } catch (_) {
+      continue;
+    }
   }
+  return false;
 }
 
 bool _isLoginEnabled = false;
@@ -68,6 +76,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await FirebaseNotifications().initNotifications();
+
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 

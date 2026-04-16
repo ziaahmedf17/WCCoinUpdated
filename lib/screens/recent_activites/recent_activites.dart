@@ -74,41 +74,91 @@ class _RecentActivitiesState extends State<RecentActivities> {
 
   Widget _buildErrorWidget(String error) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 64.v,
-            color: Colors.red.withOpacity(0.7),
-          ),
-          Gap.v(20),
-          const CustomText(
-            title: "Error loading activities",
-            size: 18,
-            color: Colors.red,
-          ),
-          Gap.v(10),
-          CustomText(
-            title: error,
-            size: 14,
-            color: Colors.red.withOpacity(0.8),
-            alignment: TextAlign.center,
-          ),
-          Gap.v(20),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                activitiesResponseFuture = _activityService.fetchActivities();
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.white,
-              foregroundColor: AppColors.primary,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 24.h, vertical: 20.v),
+        padding: EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
-            child: const Text('Retry'),
+          ],
+          border: Border.all(
+            color: Colors.red.withOpacity(0.2),
+            width: 1,
           ),
-        ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Animated/Shaking icon (optional)
+            Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.error_outline,
+                size: 64.v,
+                color: Colors.red.withOpacity(0.7),
+              ),
+            ),
+            Gap.v(20),
+            CustomText(
+              title: "Error loading activities",
+              size: 18,
+              color: AppColors.fontColor,
+              fontWeight: FontWeight.w600,
+            ),
+            Gap.v(12),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12.v),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: CustomText(
+                title: error.replaceAll('Exception:', ''),
+                size: 14,
+                color: Colors.red.withOpacity(0.8),
+                alignment: TextAlign.center,
+                maxLines: 5,
+              ),
+            ),
+            Gap.v(24),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  activitiesResponseFuture = _activityService.fetchActivities();
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.white,
+                foregroundColor: AppColors.primary,
+                elevation: 2,
+                padding: EdgeInsets.symmetric(horizontal: 32.h, vertical: 12.v),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: AppColors.primary.withOpacity(0.5)),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.refresh, size: 18),
+                  Gap.h(8),
+                  const Text('Try Again'),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

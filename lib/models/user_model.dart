@@ -1,28 +1,3 @@
-// class UserModel {
-//   final String name;
-//   final String email;
-//   final String avatar;
-//   final int coins;
-//   final int totalRedeem;
-//
-//   UserModel({
-//     required this.name,
-//     required this.email,
-//     required this.avatar,
-//     required this.coins,
-//     required this.totalRedeem,
-//   });
-//
-//   factory UserModel.fromJson(Map<String, dynamic> json) {
-//     return UserModel(
-//       name: json['name'] ?? '',
-//       email: json['email'] ?? '',
-//       avatar: json['avatar'] ?? '',
-//       coins: json['coins'] ?? 0,
-//       totalRedeem: json['total_radeem'] ?? 0,
-//     );
-//   }
-// }
 
 
 class UserModel {
@@ -49,7 +24,7 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    final user = json['user'] ?? json; // handles if 'user' key exists
+    final user = json['user'] ?? json;
 
     return UserModel(
       id: user['id'] ?? 0,
@@ -62,5 +37,19 @@ class UserModel {
       totalRedeem: user['total_radeem'] ?? 0,
       status: user['status'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'avatar': avatar,
+      'google_id': googleId,
+      'coins': coins,
+      'referral_code': referralCode,
+      'total_radeem': totalRedeem, // keep original key to match fromJson
+      'status': status,
+    };
   }
 }

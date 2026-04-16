@@ -525,6 +525,97 @@ class _QuizViewState extends State<QuizView>
     }
   }
 
+  Widget _buildErrorWidget(String error) {
+    return Center(
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 24.h, vertical: 20.v),
+        padding: EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+          border: Border.all(
+            color: Colors.red.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Animated/Shaking icon (optional)
+            Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.error_outline,
+                size: 64.v,
+                color: Colors.red.withOpacity(0.7),
+              ),
+            ),
+            Gap.v(20),
+            CustomText(
+              title: "Error loading Quiz",
+              size: 18,
+              color: AppColors.fontColor,
+              fontWeight: FontWeight.w600,
+            ),
+            Gap.v(12),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12.v),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: CustomText(
+                title: 'No Internet',
+                size: 14,
+                color: Colors.red.withOpacity(0.8),
+                alignment: TextAlign.center,
+                maxLines: 5,
+              ),
+            ),
+            Gap.v(24),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  quizzesFuture = QuizService().fetchQuizzes(context);
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.white,
+                foregroundColor: AppColors.primary,
+                elevation: 2,
+                padding: EdgeInsets.symmetric(horizontal: 32.h, vertical: 12.v),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: AppColors.primary.withOpacity(0.5)),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.refresh, size: 18),
+                  Gap.h(8),
+                  const Text('Try Again'),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -551,25 +642,7 @@ class _QuizViewState extends State<QuizView>
               );
             } else if (snapshot.hasError) {
               return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CustomText(
-                      title: "Error: ${snapshot.error}",
-                      color: Colors.red,
-                      size: 16,
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          quizzesFuture = QuizService().fetchQuizzes(context);
-                        });
-                      },
-                      child: const Text("Retry"),
-                    )
-                  ],
-                ),
+                child: _buildErrorWidget(snapshot.error.toString()),
               );
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const Center(

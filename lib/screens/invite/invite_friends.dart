@@ -82,7 +82,7 @@ class _InviteFriendsViewState extends State<InviteFriendsView> {
       }
     } catch (e) {
       if (!mounted) return;
-      showCustomSnackBar("Error loading referral info: $e", context,
+      showCustomSnackBar("Error loading referral info: No Internet", context,
           isError: true);
       setState(() => _isLoadingReferralInfo = false);
     }

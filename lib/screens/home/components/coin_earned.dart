@@ -91,7 +91,7 @@ class _CoinsEarnedSectionState extends State<CoinsEarnedSection>
           "Authorization": "Bearer $token",
           "Accept": "application/json",
         },
-      );
+      ).timeout(const Duration(seconds: 30));
 
       if (!mounted) return;
 
@@ -115,11 +115,8 @@ class _CoinsEarnedSectionState extends State<CoinsEarnedSection>
         }
       }
     } catch (e) {
-      if (!mounted) return;
-      showCustomSnackBar(
-          "No internet connection. Please check your network and try again.",
-          context,
-          isError: true);
+      // Silently ignore — timer UI stays as-is, no snackbar spam on mobile data
+      debugPrint('_checkTimerStatus error: $e');
     }
   }
 
@@ -213,7 +210,7 @@ class _CoinsEarnedSectionState extends State<CoinsEarnedSection>
         "Accept": "application/json",
         "Content-Type": "application/json",
       },
-    );
+    ).timeout(const Duration(seconds: 30));
 
     if (!mounted) return;
 
@@ -387,20 +384,12 @@ class _CoinsEarnedSectionState extends State<CoinsEarnedSection>
                       scale: _canClaim
                           ? _scaleAnimation
                           : AlwaysStoppedAnimation(1.0),
-                      // child: InkWell(
-                      //   onTap: _handleClaimBonus,
-                      //   borderRadius: BorderRadius.circular(20),
-                      //   child: Opacity(
-                      //     opacity: _canClaim ? 1.0 : 0.5,
-                      //     child: Image.asset('assets/images/hourly_button.png',
-                      //         scale: 6.v),
-                      //   ),
-                      // ),
-
                       child: PrimaryBTN(
-                        buttonTitle: 'Claim',
+                        buttonTitle: _canClaim ? 'Claim' : 'Wait',
                         onCLick: _handleClaimBonus,
-                        btColor: AppColors.secondary,
+                        btColor: _canClaim
+                            ? AppColors.secondary
+                            : AppColors.secondary.withOpacity(.7),
                         width: 100.h,
                         height: 40.v,
                       ),
@@ -412,46 +401,3 @@ class _CoinsEarnedSectionState extends State<CoinsEarnedSection>
     );
   }
 }
-
-
-
-
-
-     // ... rest of your build method remains the same until the button part
-          // Column(
-          //   children: [
-              // Image.asset(
-              //   'assets/images/gift.png',
-              //   scale: 6.v,
-              // ),
-          //     const Spacer(),
-              // _isClaimingBonus
-              //     ? Container(
-              //         height: 40,
-              //         width: 40,
-              //         padding: const EdgeInsets.all(8),
-              //         decoration: BoxDecoration(
-              //           color: Colors.white.withOpacity(0.2),
-              //           borderRadius: BorderRadius.circular(20),
-              //         ),
-              //         child: const CircularProgressIndicator(
-              //           color: Colors.white,
-              //           strokeWidth: 2,
-              //         ),
-              //       )
-              //     : ScaleTransition(
-              //         scale: _canClaim
-              //             ? _scaleAnimation
-              //             : AlwaysStoppedAnimation(1.0),
-              //         child: InkWell(
-              //           onTap: _handleClaimBonus,
-              //           borderRadius: BorderRadius.circular(20),
-              //           child: Opacity(
-              //             opacity: _canClaim ? 1.0 : 0.5,
-              //             child: Image.asset('assets/images/hourly_button.png',
-              //                 scale: 6.v),
-              //           ),
-              //         ),
-              //       ),
-          //   ],
-          // ),

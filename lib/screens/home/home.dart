@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:in_app_review/in_app_review.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
+// import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:wc_coin_app/core/constants/ad_helper/ad_helper.dart';
 import 'package:wc_coin_app/core/constants/ad_helper/app_open_ad_helper.dart';
 import 'package:wc_coin_app/core/constants/ad_helper/rewarded_ad_loading.dart';
@@ -22,7 +25,7 @@ import 'package:wc_coin_app/screens/scratch_card/scratch_card.dart';
 import 'package:wc_coin_app/screens/spin_and_win/spin_and_win.dart';
 import 'package:wc_coin_app/screens/subscribe/subscribe_view.dart';
 import 'package:wc_coin_app/screens/visit_to_earn/visit_to_earn_view.dart';
-import 'package:wc_coin_app/services/network_listener.dart';
+import 'package:wc_coin_app/services/cache_service.dart';
 import 'package:wc_coin_app/services/reward_values_service.dart';
 import 'package:wc_coin_app/services/user_profile_service.dart';
 import 'package:wc_coin_app/shared/primary_btn.dart';
@@ -45,7 +48,7 @@ class _HomeViewState extends State<HomeView>
   String _errorMessage = '';
 
   // Connectivity listener
-  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+  // StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
   bool _isDialogShowing = false;
 
   // Ad timer variables
@@ -58,6 +61,8 @@ class _HomeViewState extends State<HomeView>
   GoogleAdmobProvider adVM = GoogleAdmobProvider();
   final RewardsService _rewardsService = RewardsService();
   RewardsModel _rewards = RewardsModel.defaults();
+  final InAppReview inAppReview = InAppReview.instance;
+
   List img = [
     'spin.png',
     'scratch.png',
@@ -118,21 +123,65 @@ class _HomeViewState extends State<HomeView>
     );
 
     _initializeScreen();
-    _startRealtimeInternetListener();
+    // _startRealtimeInternetListener();
+    requestPermission();
+  }
+
+  Future<void> requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    print('Permission: ${settings.authorizationStatus}');
+  }
+
+  Future<void> _showReviewIfNeeded() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int downloadCount = prefs.getInt('download_count') ?? 0;
+    bool reviewRequested = prefs.getBool('review_requested') ?? false;
+
+    downloadCount++;
+    prefs.setInt('download_count', downloadCount);
+
+    if (downloadCount >= 4 && !reviewRequested) {
+      if (await inAppReview.isAvailable()) {
+        try {
+          await inAppReview.requestReview();
+          prefs.setBool('review_requested', true);
+        } catch (e) {
+          print('Error requesting review: $e');
+        }
+      }
+    }
   }
 
   void _initializeScreen() async {
-    bool hasInternet = await ConnectivityHelper.checkAndShowDialog(
-      context,
-      onRetry: _initializeScreen,
-    );
-
-    if (!hasInternet) return;
-
-    _fetchUserProfile();
+    _loadFromCache(); // ← Load cache instantly (no API)
     _checkAdTimerStatus();
     _startAdApiCheckTimer();
     _fetchRewards();
+    await _showReviewIfNeeded();
+  }
+
+  Future<void> _loadFromCache() async {
+    final cachedUser = await UserCacheService.loadUser();
+    if (!mounted) return;
+
+    if (cachedUser != null) {
+      // We have cached data — show it immediately, no loading spinner
+      setState(() {
+        _user = cachedUser;
+        _isLoading = false;
+        _errorMessage = '';
+      });
+    } else {
+      // Nothing cached yet (first launch) — must fetch from API
+      _fetchUserProfile();
+    }
   }
 
   Future<void> _fetchRewards() async {
@@ -146,39 +195,10 @@ class _HomeViewState extends State<HomeView>
     }
   }
 
-  void _startRealtimeInternetListener() {
-    _connectivitySubscription =
-        ConnectivityHelper.connectivityStream.listen((results) {
-      // Check if lost connection
-      if (ConnectivityHelper.hasNoInternet(results)) {
-        print("🔴 Internet connection lost");
-        if (!_isDialogShowing && mounted) {
-          _isDialogShowing = true;
-          ConnectivityHelper.showNoInternetDialog(
-            context,
-            onRetry: () {
-              _isDialogShowing = false;
-              _initializeScreen();
-            },
-          ).then((_) {
-            _isDialogShowing = false;
-          });
-        }
-      } else {
-        print("🟢 Internet connection restored");
-        // Optionally refresh data when connection is restored
-        if (mounted && !_isDialogShowing) {
-          _fetchUserProfile();
-          _checkAdTimerStatus();
-        }
-      }
-    });
-  }
-
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _connectivitySubscription?.cancel();
+    // _connectivitySubscription?.cancel();
     _adCountdownTimer?.cancel();
     _adApiCheckTimer?.cancel();
     _adAnimationController.dispose();
@@ -187,9 +207,7 @@ class _HomeViewState extends State<HomeView>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Update coins when app comes to foreground
     if (state == AppLifecycleState.resumed) {
-      _fetchUserProfile();
       _checkAdTimerStatus();
     }
   }
@@ -213,7 +231,7 @@ class _HomeViewState extends State<HomeView>
           "Authorization": "Bearer $token",
           "Accept": "application/json",
         },
-      );
+      ).timeout(const Duration(seconds: 30));
 
       if (!mounted) return;
 
@@ -234,12 +252,19 @@ class _HomeViewState extends State<HomeView>
           _startAdCountdown();
         }
       }
-    } catch (e) {
+    } on SocketException {
+      // No network — silently ignore, UI stays as-is
       if (!mounted) return;
-      showCustomSnackBar(
-          "No internet connection. Please check your network and try again.",
-          context,
-          isError: true);
+    } on HttpException {
+      // Server issue — silently ignore
+      if (!mounted) return;
+    } on TimeoutException {
+      // Slow connection — silently ignore, not a real failure
+      if (!mounted) return;
+    } catch (e) {
+      // Any other error — silently ignore
+      if (!mounted) return;
+      debugPrint('_checkAdTimerStatus error: $e');
     }
   }
 
@@ -266,18 +291,6 @@ class _HomeViewState extends State<HomeView>
       });
     });
   }
-
-  // String _formatAdTime() {
-  //   if (_canClaimAd) return "Ready!";
-
-  //   int minutes = _remainingAdSeconds ~/ 60;
-  //   int seconds = _remainingAdSeconds % 60;
-
-  //   if (minutes > 0) {
-  //     return "${minutes}m ${seconds}s";
-  //   }
-  //   return "${seconds}s";
-  // }
 
   String _formatAdTime() {
     if (_canClaimAd) return "Ready!";
@@ -307,30 +320,79 @@ class _HomeViewState extends State<HomeView>
 
       if (!mounted) return;
 
+      // ✅ Save fresh data to cache
+      await UserCacheService.saveUser(user!);
+
       setState(() {
         _user = user;
         _isLoading = false;
       });
-    } catch (_) {
+    } on SocketException catch (e) {
+      if (!mounted) return;
+      final isNoInternet = e.message.contains('Failed host lookup') ||
+          e.message.contains('Network is unreachable') ||
+          e.message.contains('Connection refused') ||
+          (e.osError?.errorCode == 7) ||
+          (e.osError?.errorCode == 111);
+
+      // ✅ On network error, try showing cached data instead of error screen
+      final cachedUser = await UserCacheService.loadUser();
       if (!mounted) return;
 
+      if (cachedUser != null) {
+        setState(() {
+          _user = cachedUser;
+          _isLoading = false;
+          _errorMessage = ''; // Hide error — show cached data silently
+        });
+        showCustomSnackBar(
+          "Showing cached data. Check your connection.",
+          context,
+          isError: true,
+        );
+      } else {
+        setState(() {
+          _errorMessage = isNoInternet
+              ? "No internet connection."
+              : "Server unreachable. Please try again.";
+          _isLoading = false;
+        });
+      }
+    } on HttpException {
+      if (!mounted) return;
       setState(() {
-        _errorMessage = "No internet connection.";
+        _errorMessage = "Server error. Please try again.";
         _isLoading = false;
       });
-
-      showCustomSnackBar(
-        "No internet connection. Please check your network and try again.",
-        context,
-        isError: true,
-      );
+    } on TimeoutException {
+      if (!mounted) return;
+      final cachedUser = await UserCacheService.loadUser();
+      if (!mounted) return;
+      if (cachedUser != null) {
+        setState(() {
+          _user = cachedUser;
+          _isLoading = false;
+        });
+        showCustomSnackBar("Timeout — showing cached data.", context,
+            isError: true);
+      } else {
+        setState(() {
+          _errorMessage = "Request timed out. Please retry.";
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = "Something went wrong.";
+        _isLoading = false;
+      });
     }
   }
 
-  // Method to handle coin updates from child screens
   void _updateCoins() {
     if (mounted) {
-      _fetchUserProfile();
+      _loadFromCache();
     }
   }
 
@@ -357,18 +419,20 @@ class _HomeViewState extends State<HomeView>
         return;
       }
 
-      final response = await http.post(
-        Uri.parse("https://wc-admin.genwizz.com/api/ads"),
-        headers: {
-          "Authorization": "Bearer $token",
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode({
-          "coins": "250",
-          "type": "ad",
-        }),
-      );
+      final response = await http
+          .post(
+            Uri.parse("https://wc-admin.genwizz.com/api/ads"),
+            headers: {
+              "Authorization": "Bearer $token",
+              "Accept": "application/json",
+              "Content-Type": "application/json",
+            },
+            body: jsonEncode({
+              "coins": "250",
+              "type": "ad",
+            }),
+          )
+          .timeout(const Duration(seconds: 30));
 
       // Close loading dialog first
       if (mounted) {
@@ -469,9 +533,9 @@ class _HomeViewState extends State<HomeView>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.monetization_on,
+                      const Icon(Icons.monetization_on,
                           color: Colors.amber, size: 20),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       CustomText(
                         title: cardSubtitles[3],
                         size: 16,
@@ -751,26 +815,128 @@ class _HomeViewState extends State<HomeView>
             )
           : _errorMessage.isNotEmpty
               ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const CustomText(
-                        title: 'Error loading profile',
-                        size: 16,
-                        color: Colors.white,
-                      ),
-                      Gap.v(10),
-                      CustomText(
-                        title: _errorMessage,
-                        size: 12,
-                        color: Colors.white.withOpacity(0.7),
-                      ),
-                      Gap.v(20),
-                      ElevatedButton(
-                        onPressed: _fetchUserProfile,
-                        child: const Text('Retry'),
-                      ),
-                    ],
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 32, vertical: 24),
+                    margin: const EdgeInsets.symmetric(horizontal: 24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Animated error icon
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: AppColors.red.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.error_outline_rounded,
+                            size: 64,
+                            color: AppColors.red,
+                          ),
+                        ),
+
+                        Gap.v(20),
+
+                        // Main error title with better typography
+                        const Text(
+                          'Oops! Something went wrong',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.fontColor,
+                            letterSpacing: -0.3,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+
+                        Gap.v(12),
+
+                        // Error message with background
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: AppColors.red.withOpacity(0.05),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: AppColors.red.withOpacity(0.2),
+                              width: 1,
+                            ),
+                          ),
+                          child: CustomText(
+                            title: _errorMessage,
+                            size: 13,
+                            color: AppColors.fontColor.withOpacity(0.8),
+                            alignment: TextAlign.center,
+                          ),
+                        ),
+
+                        Gap.v(24),
+
+                        // Enhanced retry button
+                        ElevatedButton(
+                          onPressed: _fetchUserProfile,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 32, vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            elevation: 0,
+                            shadowColor: Colors.transparent,
+                          ).copyWith(
+                            overlayColor: WidgetStateProperty.all(
+                              Colors.white.withOpacity(0.2),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.refresh_rounded, size: 20),
+                              Gap.h(8),
+                              const Text(
+                                'Try Again',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Gap.v(8),
+
+                        // Optional helpful hint
+                        if (_errorMessage.contains('network') ||
+                            _errorMessage.contains('connection'))
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Text(
+                              '💡 Tip: Check your internet connection',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: AppColors.fontColor.withOpacity(0.5),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 )
               : RefreshIndicator(
@@ -789,7 +955,6 @@ class _HomeViewState extends State<HomeView>
                             child: CoinsEarnedSection(
                               coins: _user?.coins ?? 0,
                               value: 'Win up to ${_rewards.hourly} coins',
-                              // ontap: _fetchUserProfile,
                               ontap: () async {
                                 apads['int']
                                     ? InterstitialAdLoading.show(
@@ -799,8 +964,6 @@ class _HomeViewState extends State<HomeView>
                                       )
                                     : _fetchUserProfile();
                               },
-
-                              // onCoinsUpdated: _updateCoins,
                             ),
                           ),
                           Gap.v(20),
@@ -834,7 +997,7 @@ class _HomeViewState extends State<HomeView>
                                 child: ScaleTransition(
                                   scale: (isWatchAd && _canClaimAd)
                                       ? _adScaleAnimation
-                                      : AlwaysStoppedAnimation(1.0),
+                                      : const AlwaysStoppedAnimation(1.0),
                                   child: Opacity(
                                     opacity: canUseCard ? 1.0 : 0.7,
                                     child: SizedBox(
@@ -869,8 +1032,6 @@ class _HomeViewState extends State<HomeView>
                                             ),
                                             Gap.v(5),
                                             CustomText(
-                                              // title: cardSubtitles[index],
-
                                               title: isWatchAd
                                                   ? (_canClaimAd
                                                       ? '${cardSubtitles[3]}\nReady'
@@ -928,7 +1089,6 @@ class _HomeViewState extends State<HomeView>
                                                     _updateCoins();
                                                 } else if (index == 3) {
                                                   // Watch & Win - Show confirmation dialog first
-
                                                   (isWatchAd && _canClaimAd)
                                                       ? _showConfirmationDialog()
                                                       : () {};
