@@ -160,28 +160,11 @@ class _HomeViewState extends State<HomeView>
   }
 
   void _initializeScreen() async {
-    _loadFromCache(); // ← Load cache instantly (no API)
+    _fetchUserProfile();
     _checkAdTimerStatus();
     _startAdApiCheckTimer();
     _fetchRewards();
     await _showReviewIfNeeded();
-  }
-
-  Future<void> _loadFromCache() async {
-    final cachedUser = await UserCacheService.loadUser();
-    if (!mounted) return;
-
-    if (cachedUser != null) {
-      // We have cached data — show it immediately, no loading spinner
-      setState(() {
-        _user = cachedUser;
-        _isLoading = false;
-        _errorMessage = '';
-      });
-    } else {
-      // Nothing cached yet (first launch) — must fetch from API
-      _fetchUserProfile();
-    }
   }
 
   Future<void> _fetchRewards() async {
@@ -310,54 +293,25 @@ class _HomeViewState extends State<HomeView>
   Future<void> _fetchUserProfile() async {
     if (!mounted) return;
 
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+
     try {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = '';
-      });
-
       final user = await _userService.fetchProfile();
-
       if (!mounted) return;
-
-      // ✅ Save fresh data to cache
-      await UserCacheService.saveUser(user!);
 
       setState(() {
         _user = user;
         _isLoading = false;
       });
-    } on SocketException catch (e) {
+    } on SocketException {
       if (!mounted) return;
-      final isNoInternet = e.message.contains('Failed host lookup') ||
-          e.message.contains('Network is unreachable') ||
-          e.message.contains('Connection refused') ||
-          (e.osError?.errorCode == 7) ||
-          (e.osError?.errorCode == 111);
-
-      // ✅ On network error, try showing cached data instead of error screen
-      final cachedUser = await UserCacheService.loadUser();
-      if (!mounted) return;
-
-      if (cachedUser != null) {
-        setState(() {
-          _user = cachedUser;
-          _isLoading = false;
-          _errorMessage = ''; // Hide error — show cached data silently
-        });
-        showCustomSnackBar(
-          "Showing cached data. Check your connection.",
-          context,
-          isError: true,
-        );
-      } else {
-        setState(() {
-          _errorMessage = isNoInternet
-              ? "No internet connection."
-              : "Server unreachable. Please try again.";
-          _isLoading = false;
-        });
-      }
+      setState(() {
+        _errorMessage = "No internet connection.";
+        _isLoading = false;
+      });
     } on HttpException {
       if (!mounted) return;
       setState(() {
@@ -366,21 +320,10 @@ class _HomeViewState extends State<HomeView>
       });
     } on TimeoutException {
       if (!mounted) return;
-      final cachedUser = await UserCacheService.loadUser();
-      if (!mounted) return;
-      if (cachedUser != null) {
-        setState(() {
-          _user = cachedUser;
-          _isLoading = false;
-        });
-        showCustomSnackBar("Timeout — showing cached data.", context,
-            isError: true);
-      } else {
-        setState(() {
-          _errorMessage = "Request timed out. Please retry.";
-          _isLoading = false;
-        });
-      }
+      setState(() {
+        _errorMessage = "Request timed out. Please retry.";
+        _isLoading = false;
+      });
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -392,7 +335,7 @@ class _HomeViewState extends State<HomeView>
 
   void _updateCoins() {
     if (mounted) {
-      _loadFromCache();
+      _fetchUserProfile(); // ← was _loadFromCache()
     }
   }
 
